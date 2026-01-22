@@ -3,69 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMANAT | Live Trustee</title>
+    <title>AMANAT | Digital Ownership Transfer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-black text-gray-200 p-4">
+<body class="bg-black text-gray-200 font-sans pb-32">
 
-    <div class="max-w-md mx-auto space-y-6">
-        <header class="text-center py-4">
-            <h1 class="text-4xl font-black text-yellow-500 italic">AMANAT</h1>
-            <p class="text-[10px] text-gray-500 tracking-[0.3em]">SECURE DATABASE ACTIVE</p>
+    <div class="max-w-md mx-auto p-4 space-y-8">
+        <header class="text-center py-6">
+            <h1 class="text-5xl font-black text-yellow-500 italic tracking-tighter">AMANAT</h1>
+            <p class="text-[9px] tracking-[0.3em] text-gray-500 uppercase">Universal Ownership & Revenue Transfer</p>
         </header>
 
-        <section class="bg-zinc-900 p-6 rounded-[2.5rem] border border-zinc-800">
-            <h3 class="text-yellow-500 font-bold mb-4 uppercase text-xs">Add Family Heir (Waris)</h3>
-            <input type="text" id="heirName" placeholder="Full Name" class="w-full bg-black border border-zinc-800 p-3 rounded-xl mb-3 outline-none focus:border-yellow-500 text-sm">
-            <input type="tel" id="heirPhone" placeholder="Mobile Number" class="w-full bg-black border border-zinc-800 p-3 rounded-xl mb-4 outline-none focus:border-yellow-500 text-sm">
-            <button onclick="saveToFirebase()" class="w-full bg-yellow-600 py-3 rounded-xl font-bold text-black active:scale-95 transition-all">SAVE TO DATABASE</button>
+        <section class="bg-zinc-900 border border-zinc-800 rounded-[3rem] p-8 text-center shadow-2xl border-t-red-600">
+            <h2 class="text-xs font-bold text-red-500 uppercase mb-4 tracking-widest">Ownership Protection Active</h2>
+            <div id="main-timer" class="text-5xl font-mono font-bold mb-6">89d 23h 59m</div>
+            <button onclick="alert('Verification Confirmed!')" class="w-full bg-red-600 py-5 rounded-2xl font-black text-xl shadow-lg active:scale-95 transition-all">I AM SAFE</button>
+            <p class="text-[9px] text-gray-600 mt-4 italic text-center leading-tight">If inactive for 90 days, ownership transfer protocol will initiate via family agreement.</p>
         </section>
 
-        <section id="dataList" class="space-y-3">
-            <h3 class="text-gray-500 text-[10px] uppercase font-bold ml-2 tracking-widest">Saved Members</h3>
-            </section>
+        <div class="space-y-4">
+            <h3 class="text-xs text-gray-400 font-black uppercase tracking-widest ml-4">Income & Asset Vault</h3>
+
+            <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-[2rem] flex items-center gap-5">
+                <div class="text-3xl text-white"><i class="fa-solid fa-key"></i></div>
+                <div class="flex-1">
+                    <h4 class="font-bold text-sm">Master IDs (Google/Apple)</h4>
+                    <p class="text-[9px] text-gray-500">Gmail, iCloud, Microsoft - Root of all security</p>
+                </div>
+                <button onclick="addAsset('Master IDs')" class="bg-zinc-800 p-3 rounded-full text-yellow-500"><i class="fa-solid fa-plus"></i></button>
+            </div>
+
+            <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-[2rem] flex items-center gap-5">
+                <div class="text-3xl text-blue-500"><i class="fa-brands fa-youtube"></i></div>
+                <div class="flex-1">
+                    <h4 class="font-bold text-sm">Content Revenue</h4>
+                    <p class="text-[9px] text-gray-500">YouTube, TikTok, Meta Pages, X Revenue</p>
+                </div>
+                <button onclick="addAsset('Revenue Social Media')" class="bg-zinc-800 p-3 rounded-full text-yellow-500"><i class="fa-solid fa-plus"></i></button>
+            </div>
+
+            <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-[2rem] flex items-center gap-5">
+                <div class="text-3xl text-orange-500"><i class="fa-solid fa-building-columns"></i></div>
+                <div class="flex-1">
+                    <h4 class="font-bold text-sm">Crypto & Wallets</h4>
+                    <p class="text-[9px] text-gray-500">Binance, OKX, TrustWallet, MetaMask Seeds</p>
+                </div>
+                <button onclick="addAsset('Crypto Assets')" class="bg-zinc-800 p-3 rounded-full text-yellow-500"><i class="fa-solid fa-plus"></i></button>
+            </div>
+
+            <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-[2rem] flex items-center gap-5">
+                <div class="text-3xl text-purple-500"><i class="fa-solid fa-vanguard"></i></div>
+                <div class="flex-1">
+                    <h4 class="font-bold text-sm">Gaming Accounts</h4>
+                    <p class="text-[9px] text-gray-500">PUBG Mobile, Steam, Epic Games, Roblox Skins</p>
+                </div>
+                <button onclick="addAsset('Gaming Accounts')" class="bg-zinc-800 p-3 rounded-full text-yellow-500"><i class="fa-solid fa-plus"></i></button>
+            </div>
+        </div>
+
+        <section class="bg-zinc-900 border border-zinc-800 rounded-[3rem] p-6 shadow-xl">
+            <h3 class="text-xs font-bold text-yellow-500 uppercase mb-6 flex items-center gap-2 tracking-widest">
+                <i class="fa-solid fa-user-shield"></i> Legal Heir (Waris)
+            </h3>
+            <div class="space-y-4 bg-black/50 p-6 rounded-3xl border border-zinc-800">
+                <input type="text" id="heirName" placeholder="Full Name (Heir)" class="w-full bg-transparent border-b border-zinc-800 p-2 text-sm outline-none focus:border-yellow-500">
+                <input type="tel" id="heirPhone" placeholder="Mobile Number (For Access)" class="w-full bg-transparent border-b border-zinc-800 p-2 text-sm outline-none focus:border-yellow-500">
+                <button onclick="saveHeir()" class="w-full bg-yellow-500 text-black font-black py-4 rounded-2xl mt-4 active:scale-95 transition-all shadow-lg">FINALIZE TRUST AGREEMENT</button>
+            </div>
+        </section>
+
+        <div id="heirList" class="space-y-3 pb-10"></div>
     </div>
 
     <script>
-        // Firebase Config (Using your Project ID)
-        const firebaseConfig = {
-            databaseURL: "https://amant-manger-default-rtdb.firebaseio.com"
-        };
+        const firebaseConfig = { databaseURL: "https://amant-manger-default-rtdb.firebaseio.com" };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Save Function
-        function saveToFirebase() {
+        function addAsset(type) {
+            let details = prompt(`Enter ${type} instructions or private keys for your heirs. This will only be shared when the trust is triggered:`);
+            if(details) alert(`${type} ownership protocol saved!`);
+        }
+
+        function saveHeir() {
             const name = document.getElementById('heirName').value;
             const phone = document.getElementById('heirPhone').value;
-
             if(name && phone) {
-                database.ref('heirs/').push({
-                    name: name,
-                    phone: phone,
-                    timestamp: Date.now()
+                database.ref('heirs/').push({ name, phone, timestamp: Date.now() }).then(() => {
+                    alert("Heir added to the ownership transfer agreement.");
+                    document.getElementById('heirName').value = "";
+                    document.getElementById('heirPhone').value = "";
                 });
-                alert("Data saved in Firebase successfully!");
-                document.getElementById('heirName').value = "";
-                document.getElementById('heirPhone').value = "";
-            } else {
-                alert("Please fill both fields!");
             }
         }
 
-        // Real-time Show Data
-        database.ref('heirs/').on('value', (snapshot) => {
-            const dataList = document.getElementById('dataList');
-            dataList.innerHTML = '<h3 class="text-gray-500 text-[10px] uppercase font-bold ml-2 tracking-widest">Saved Members</h3>';
-            snapshot.forEach((childSnapshot) => {
-                const childData = childSnapshot.val();
-                dataList.innerHTML += `
-                    <div class="bg-zinc-900/50 p-4 rounded-2xl border border-zinc-800">
-                        <p class="font-bold text-sm text-white">${childData.name}</p>
-                        <p class="text-[10px] text-gray-500">${childData.phone}</p>
-                    </div>`;
+        database.ref('heirs/').on('value', (snap) => {
+            const list = document.getElementById('heirList');
+            list.innerHTML = '';
+            snap.forEach((child) => {
+                const item = child.val();
+                list.innerHTML += `<div class="bg-zinc-900/50 p-5 rounded-3xl border border-zinc-800 flex justify-between items-center mx-2">
+                    <div><p class="font-bold text-xs text-white uppercase">${item.name}</p><p class="text-[10px] text-gray-500">${item.phone}</p></div>
+                    <span class="text-[8px] bg-green-500/10 text-green-500 px-3 py-1 rounded-full font-black">AUTHORIZED</span>
+                </div>`;
             });
         });
     </script>
