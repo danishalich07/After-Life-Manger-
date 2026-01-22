@@ -3,31 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amanat - Legacy Vault</title>
+    <title>Amanat - Full Vault</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-black text-white p-6 font-sans">
+<body class="bg-black text-white p-4 font-sans">
     <div class="max-w-md mx-auto">
-        <h1 class="text-4xl font-bold text-yellow-500 mb-2 italic text-center">AMANAT</h1>
-        <p class="text-gray-500 text-[10px] mb-8 text-center tracking-[3px]">DIGITAL LEGACY MANAGER</p>
+        <h1 class="text-4xl font-bold text-yellow-500 italic text-center mb-1">AMANAT</h1>
+        <p class="text-[9px] tracking-[4px] text-gray-500 text-center mb-6">DIGITAL ESTATE MANAGER</p>
 
-        <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 mb-8 shadow-2xl">
-            <div class="flex justify-between items-center mb-4">
-                <span class="text-green-500 text-xs font-mono animate-pulse">● SYSTEM LIVE</span>
-            </div>
-            <button onclick="alert('Aap ki salamti confirm ho gayi hai!')" class="w-full bg-red-600 hover:bg-red-700 py-5 rounded-2xl font-black text-xl shadow-lg transition-all active:scale-95">I AM SAFE</button>
+        <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 mb-6 shadow-xl text-center">
+            <p class="text-xs text-red-500 mb-2 font-mono uppercase tracking-widest">System Check-in Required</p>
+            <div id="timer" class="text-4xl font-mono font-bold mb-6">29d 23h 59m</div>
+            <button onclick="alert('System Updated: Your safety is confirmed.')" class="w-full bg-red-600 hover:bg-red-700 py-4 rounded-xl font-bold text-lg shadow-lg active:scale-95 transition-all">I AM SAFE</button>
         </div>
 
-        <div class="space-y-4">
-            <div class="bg-zinc-900 p-5 rounded-2xl flex justify-between items-center border-l-4 border-red-600 text-sm">
-                <span class="font-bold tracking-wider">YouTube Access</span>
-                <span class="text-yellow-500 text-[10px]">LOCKED</span>
+        <h2 class="text-xs font-bold text-gray-400 mb-3 uppercase tracking-widest ml-2">Legacy Assets</h2>
+        <div class="space-y-3">
+            <div class="bg-zinc-900 p-4 rounded-2xl border-l-4 border-blue-500 flex justify-between items-center">
+                <div>
+                    <p class="font-bold text-sm">Apple & Gmail IDs</p>
+                    <p class="text-[10px] text-gray-500">Recovery & Access Keys</p>
+                </div>
+                <span class="text-yellow-600 text-[10px] font-bold">LOCKED</span>
             </div>
-            <div class="bg-zinc-900 p-5 rounded-2xl flex justify-between items-center border-l-4 border-blue-600 text-sm">
-                <span class="font-bold tracking-wider">Facebook Data</span>
-                <span class="text-yellow-500 text-[10px]">LOCKED</span>
+
+            <div class="bg-zinc-900 p-4 rounded-2xl border-l-4 border-red-500 flex justify-between items-center">
+                <div>
+                    <p class="font-bold text-sm">YouTube & Instagram</p>
+                    <p class="text-[10px] text-gray-500">Content & Password Transfer</p>
+                </div>
+                <span class="text-yellow-600 text-[10px] font-bold">LOCKED</span>
+            </div>
+
+            <div class="bg-zinc-900 p-4 rounded-2xl border-l-4 border-orange-500 flex justify-between items-center">
+                <div>
+                    <p class="font-bold text-sm">Crypto Exchanges</p>
+                    <p class="text-[10px] text-gray-500">Binance / OKX Access</p>
+                </div>
+                <span class="text-yellow-600 text-[10px] font-bold">LOCKED</span>
+            </div>
+
+            <div class="bg-zinc-900 p-4 rounded-2xl border-l-4 border-green-500 flex justify-between items-center">
+                <div>
+                    <p class="font-bold text-sm">Private Keys (Seed Phrases)</p>
+                    <p class="text-[10px] text-gray-500">Encrypted Wallet Keys</p>
+                </div>
+                <span class="text-yellow-600 text-[10px] font-bold">LOCKED</span>
             </div>
         </div>
+
+        <p class="text-center text-[10px] text-gray-600 mt-8 italic">All assets will be released to designated heirs only if timer hits zero.</p>
     </div>
 </body>
 </html>
