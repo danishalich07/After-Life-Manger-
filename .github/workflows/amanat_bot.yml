@@ -1,0 +1,17 @@
+name: Amanat Daily Alert
+on:
+  schedule:
+    - cron: '0 0 * * *' # Har roz Pakistani waqt ke mutabiq subah 5 baje (UTC 00:00)
+  workflow_dispatch: # Taake aap khud bhi test karne ke liye button daba saken
+
+jobs:
+  send-verification-sms:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Twilio Alert
+        run: |
+          curl 'https://api.twilio.com/2010-04-01/Accounts/${{ secrets.TWILIO_ACCOUNT_SID }}/Messages.json' -X POST \
+          --data-urlencode 'To=whatsapp:+923488784392' \
+          --data-urlencode 'From=whatsapp:+14155238886' \
+          --data-urlencode 'Body=AMANAT ALERT (UID: AMNT-786): Please log in to your dashboard and click I AM LIVE to secure your digital assets.' \
+          -u ${{ secrets.TWILIO_ACCOUNT_SID }}:${{ secrets.TWILIO_AUTH_TOKEN }}
