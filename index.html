@@ -26,6 +26,61 @@
                 <span class="text-[10px] text-green-500 font-bold tracking-tighter">● PROTECTED</span>
             </div>
         </header>
+        
+        <div id="auth-container" class="max-w-md mx-auto p-6 bg-zinc-900 rounded-[2.5rem] border border-zinc-800 shadow-2xl my-4">
+    <div id="step-1">
+        <h2 class="text-2xl font-black text-yellow-500 italic mb-2">JOIN AMANAT</h2>
+        <p class="text-zinc-400 text-[10px] mb-6 uppercase font-bold tracking-widest">Enter number for 6-digit OTP</p>
+        
+        <input type="tel" id="user-phone" placeholder="+923488784392" 
+               class="w-full bg-black border border-zinc-800 p-4 rounded-2xl text-white mb-4 outline-none focus:border-yellow-600">
+        
+        <button onclick="sendOTP()" id="btn-send" class="w-full bg-yellow-600 text-black font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all">
+            GET VERIFICATION CODE
+        </button>
+    </div>
+
+    <div id="step-2" class="hidden text-center">
+        <h2 class="text-2xl font-black text-green-500 italic mb-2">VERIFYING...</h2>
+        <p class="text-zinc-400 text-[10px] mb-6 uppercase font-bold">Code sent to your phone</p>
+        
+        <input type="number" id="otp-input" placeholder="0 0 0 0 0 0" 
+               class="w-full bg-black border border-zinc-800 p-4 rounded-2xl text-white mb-4 text-center text-2xl tracking-[0.5em] outline-none">
+        
+        <button onclick="verifyOTP()" class="w-full bg-green-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all">
+            ACTIVATE MY ACCOUNT
+        </button>
+    </div>
+</div>
+
+<script>
+    // Naye Functions purane script ke niche add karein
+    function sendOTP() {
+        const phone = document.getElementById('user-phone').value;
+        if(!phone) return alert("Phone number is required!");
+        
+        // Button loading state
+        document.getElementById('btn-send').innerText = "SENDING...";
+        
+        // Yahan Twilio logic trigger hogi (GitHub Bot ke zariye)
+        setTimeout(() => {
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.remove('hidden');
+        }, 1500);
+    }
+
+    function verifyOTP() {
+        const code = document.getElementById('otp-input').value;
+        if(code.length === 6) {
+            alert("Verification Successful!");
+            document.getElementById('auth-container').classList.add('hidden');
+            // Dashboard yahan se dikhana shuru hoga
+        } else {
+            alert("Please enter a valid 6-digit code.");
+        }
+    }
+</script>
+
 
         <div id="smsAlertBox" class="bg-red-600/10 border border-red-600/50 p-6 rounded-[2.5rem] text-center space-y-4 glow-red hidden">
             <h2 class="text-red-500 font-black text-sm uppercase italic tracking-widest">Verification Required</h2>
