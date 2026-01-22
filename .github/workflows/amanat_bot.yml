@@ -1,18 +1,15 @@
-name: Twilio Verify OTP
+name: Send OTP Bot
 on:
-  workflow_dispatch:
-    inputs:
-      to:
-        description: 'User Phone Number'
-        required: true
+  repository_dispatch:
+    types: [send-otp]
 
 jobs:
-  send-otp:
+  send-sms:
     runs-on: ubuntu-latest
     steps:
-      - name: Send Verification Code
+      - name: Call Twilio API
         run: |
           curl -X POST https://verify.twilio.com/v2/Services/${{ secrets.TWILIO_VERIFY_SID }}/Verifications \
-          --data-urlencode "To=${{ github.event.inputs.to }}" \
+          --data-urlencode "To=${{ github.event.client_payload.to }}" \
           --data-urlencode "Channel=sms" \
           -u ${{ secrets.TWILIO_ACCOUNT_SID }}:${{ secrets.TWILIO_AUTH_TOKEN }}
