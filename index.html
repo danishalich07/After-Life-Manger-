@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amant Legacy - Locked Version</title>
+    <title>Amant Legacy - Master Lock</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -13,86 +13,78 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #000; color: #fff; margin: 0; overflow-x: hidden; }
-        .nav-bar { position: fixed; bottom: 0; width: 100%; max-width: 450px; left: 50%; transform: translateX(-50%); background: rgba(10,10,10,0.98); border-top: 1px solid #222; display: flex; justify-content: space-around; padding: 18px 0; z-index: 1000; }
-        .glass-panel { background: rgba(18, 18, 18, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; }
-        .platform-chip { background: #111; border: 1px solid #333; border-radius: 14px; padding: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; transition: 0.2s; color: #888; }
-        .platform-chip:active { border-color: #eab308; color: #eab308; background: #1a1a0a; }
-        input, textarea { background: #0a0a0a !important; border: 1px solid #222 !important; color: #fff !important; border-radius: 16px; padding: 16px; width: 100%; outline: none; margin-bottom: 12px; font-size: 14px; }
-        input:focus { border-color: #eab308 !important; }
-        .nav-item { color: #555; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+        .glass-panel { background: rgba(15, 15, 15, 0.98); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.06); border-radius: 28px; }
+        .nav-bar { position: fixed; bottom: 0; width: 100%; max-width: 450px; left: 50%; transform: translateX(-50%); background: #080808; border-top: 1px solid #222; display: flex; justify-content: space-around; padding: 20px 0; z-index: 1000; }
+        .nav-item { color: #444; text-align: center; cursor: pointer; transition: 0.3s; }
         .nav-item.active { color: #eab308; }
+        .platform-chip { background: #111; border: 1px solid #333; border-radius: 14px; padding: 12px; font-size: 10px; font-weight: 800; color: #888; text-transform: uppercase; }
+        .platform-chip:active { border-color: #eab308; color: #eab308; }
+        .visit-link-btn { background: #eab308; color: #000; padding: 7px 14px; border-radius: 10px; font-size: 10px; font-weight: 900; display: flex; align-items: center; gap: 6px; }
+        input, textarea { background: #0a0a0a !important; border: 1px solid #222 !important; color: #fff !important; border-radius: 16px; padding: 16px; width: 100%; margin-bottom: 12px; outline: none; }
+        input:focus { border-color: #eab308 !important; }
         .hidden { display: none; }
-        /* Prevent removal of existing categories */
-        .category-lock { pointer-events: auto !important; opacity: 1 !important; }
     </style>
 </head>
-<body class="pb-36">
+<body class="pb-40">
     <div class="max-w-md mx-auto px-6">
         
         <header class="py-10 flex justify-between items-center">
             <div>
-                <p class="text-yellow-600 text-[9px] font-black uppercase tracking-[0.4em] mb-1">Permanent Access</p>
-                <h1 id="user-title" class="text-2xl font-black italic tracking-tighter text-white">DanishAlich07</h1>
+                <p class="text-yellow-600 text-[9px] font-black uppercase tracking-[0.4em] mb-1">Legacy Master System</p>
+                <h1 class="text-2xl font-black italic text-white tracking-tighter">DanishAlich07</h1>
             </div>
             <div class="h-12 w-12 glass-panel flex items-center justify-center border-yellow-600/20">
-                <i class="fa-solid fa-user-shield text-yellow-500 text-xl"></i>
+                <i class="fa-solid fa-link-slash text-yellow-500 text-lg"></i>
             </div>
         </header>
 
-        <div id="view-vault" class="animate-in fade-in duration-500">
-            <h3 class="text-[10px] font-bold text-zinc-500 uppercase mb-5 tracking-widest px-1">Global Categories</h3>
+        <div id="view-vault">
             <div class="grid grid-cols-2 gap-4 mb-10">
-                <button onclick="openGate('exchanges')" class="glass-panel p-6 flex flex-col items-center gap-3 border-b-2 border-blue-600/50">
-                    <i class="fa-solid fa-building-columns text-blue-500 text-2xl"></i><span class="text-[10px] font-black uppercase">Exchanges</span>
+                <button onclick="openPanel('exchanges')" class="glass-panel p-6 flex flex-col items-center gap-3 border-b-2 border-blue-600/40">
+                    <i class="fa-solid fa-building-columns text-blue-500 text-2xl"></i><span class="text-[10px] font-black uppercase tracking-widest">Exchanges</span>
                 </button>
-                <button onclick="openGate('wallets')" class="glass-panel p-6 flex flex-col items-center gap-3 border-b-2 border-orange-600/50">
-                    <i class="fa-solid fa-wallet text-orange-500 text-2xl"></i><span class="text-[10px] font-black uppercase">Wallets</span>
+                <button onclick="openPanel('wallets')" class="glass-panel p-6 flex flex-col items-center gap-3 border-b-2 border-orange-600/40">
+                    <i class="fa-solid fa-wallet text-orange-500 text-2xl"></i><span class="text-[10px] font-black uppercase tracking-widest">Wallets</span>
                 </button>
-                <button onclick="openGate('socials')" class="glass-panel p-6 flex flex-col items-center gap-3 border-b-2 border-pink-600/50">
-                    <i class="fa-solid fa-share-nodes text-pink-500 text-2xl"></i><span class="text-[10px] font-black uppercase">Socials</span>
+                <button onclick="openPanel('socials')" class="glass-panel p-6 flex flex-col items-center gap-3 border-b-2 border-pink-600/40">
+                    <i class="fa-solid fa-hashtag text-pink-500 text-2xl"></i><span class="text-[10px] font-black uppercase tracking-widest">Social Media</span>
                 </button>
-                <button onclick="openGate('gaming')" class="glass-panel p-6 flex flex-col items-center gap-3 border-b-2 border-green-600/50">
-                    <i class="fa-solid fa-gamepad text-green-500 text-2xl"></i><span class="text-[10px] font-black uppercase">Gaming</span>
+                <button onclick="openPanel('gaming')" class="glass-panel p-6 flex flex-col items-center gap-3 border-b-2 border-green-600/40">
+                    <i class="fa-solid fa-gamepad text-green-500 text-2xl"></i><span class="text-[10px] font-black uppercase tracking-widest">Gaming</span>
                 </button>
             </div>
 
-            <div id="active-vaults" class="space-y-4">
-                <p class="text-[10px] font-bold text-zinc-700 uppercase tracking-widest border-b border-zinc-900 pb-2">Secured Infrastructure</p>
-                </div>
+            <div id="vault-list" class="space-y-4">
+                <p class="text-[10px] font-bold text-zinc-700 uppercase tracking-widest border-b border-zinc-900 pb-2">Verified Legacy Assets</p>
+            </div>
         </div>
 
-        <div id="view-profile" class="hidden animate-in slide-in-from-right duration-300">
-            <div class="glass-panel p-8 text-center mb-6">
-                <div class="w-20 h-20 bg-yellow-600/10 rounded-full mx-auto mb-4 flex items-center justify-center border border-yellow-600/20">
-                    <i class="fa-solid fa-id-card-clip text-3xl text-yellow-600"></i>
+        <div id="view-profile" class="hidden">
+            <div class="glass-panel p-10 text-center mb-6">
+                <div class="w-20 h-20 bg-zinc-900 rounded-full mx-auto mb-4 border border-yellow-600/20 flex items-center justify-center">
+                    <i class="fa-solid fa-fingerprint text-3xl text-yellow-600"></i>
                 </div>
-                <h2 id="disp-email" class="font-bold text-lg">...</h2>
-                <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mt-2">Legacy Protocol Active</p>
-            </div>
-            
-            <div class="glass-panel p-6 space-y-4">
-                <div class="flex justify-between items-center text-sm"><span class="text-zinc-400">Heir Protection</span><span class="text-green-500 font-bold text-[10px]">ENCRYPTED</span></div>
-                <button onclick="auth.signOut()" class="w-full py-4 rounded-xl bg-red-600/10 text-red-500 font-bold text-xs uppercase mt-4">Terminate Session</button>
+                <h2 id="user-mail" class="font-bold text-lg">...</h2>
+                <span class="text-[9px] bg-green-900/20 text-green-500 px-3 py-1 rounded-full font-bold uppercase mt-3 inline-block">System Locked</span>
             </div>
         </div>
 
         <div id="action-sheet" class="hidden fixed inset-0 z-[2000] flex items-end">
-            <div class="absolute inset-0 bg-black/95" onclick="closeGate()"></div>
-            <div class="glass-panel w-full rounded-t-[40px] p-10 relative z-[2001] border-t border-yellow-600/40">
+            <div class="absolute inset-0 bg-black/95" onclick="closePanel()"></div>
+            <div class="glass-panel w-full rounded-t-[40px] p-10 relative z-[2001] border-t border-yellow-600/30 max-h-[85vh] overflow-y-auto">
                 <div class="w-12 h-1 bg-zinc-800 mx-auto mb-8 rounded-full"></div>
-                <div id="tag-cloud" class="grid grid-cols-3 gap-2 mb-8"></div>
-                <div id="input-factory" class="hidden">
-                    <div id="field-render"></div>
-                    <button onclick="finalLockSave()" class="w-full bg-yellow-600 text-black font-black py-5 rounded-2xl uppercase tracking-widest text-xs mt-4">Lock Asset Permanently</button>
+                <div id="tag-grid" class="grid grid-cols-3 gap-2 mb-8"></div>
+                <div id="form-box" class="hidden animate-in fade-in duration-300">
+                    <div id="dynamic-fields"></div>
+                    <button onclick="saveAsset()" class="w-full bg-yellow-600 text-black font-black py-5 rounded-2xl uppercase tracking-tighter text-xs shadow-xl shadow-yellow-600/10">Lock Asset & Link</button>
                 </div>
             </div>
         </div>
 
         <nav class="nav-bar">
-            <div onclick="tab('vault')" id="t-vault" class="nav-item active"><i class="fa-solid fa-box-archive text-xl"></i><span class="text-[8px] font-black uppercase">Vault</span></div>
-            <div onclick="tab('profile')" id="t-profile" class="nav-item"><i class="fa-solid fa-user-shield text-xl"></i><span class="text-[8px] font-black uppercase">Settings</span></div>
+            <div onclick="switchTab('vault')" id="t-vault" class="nav-item active"><i class="fa-solid fa-shield-halved text-xl"></i><br><span class="text-[8px] font-black uppercase mt-1">Vault</span></div>
+            <div onclick="switchTab('profile')" id="t-profile" class="nav-item"><i class="fa-solid fa-user-gear text-xl"></i><br><span class="text-[8px] font-black uppercase mt-1">Profile</span></div>
         </nav>
-
     </div>
 
     <script>
@@ -101,76 +93,84 @@
         const database = firebase.database();
         const auth = firebase.auth();
 
-        let gateCat = "";
-        let gateTag = "";
+        let activeCat = ""; let activeTag = "";
 
-        // ALL PLATFORMS LOCKED IN MASTER MAP
-        const masterRegistry = {
-            exchanges: ['Binance', 'OKX', 'ByBit', 'KuCoin', 'Coinbase', 'Mexc', 'Bitget'],
-            wallets: ['MetaMask', 'TrustWallet', 'Phantom', 'Ledger', 'SafePal', 'Exodus'],
-            socials: ['YouTube', 'TikTok', 'Instagram', 'Facebook', 'Twitter', 'Telegram'],
-            gaming: ['Steam', 'Epic Games', 'PUBG', 'FreeFire', 'PlayStation', 'Xbox']
+        // Master Link Map (Purana logic + Links)
+        const globalRegistry = {
+            exchanges: { tags: ['Binance', 'OKX', 'ByBit', 'KuCoin', 'Coinbase', 'Mexc'], link: 'https://accounts.binance.com/en/login' },
+            wallets: { tags: ['MetaMask', 'TrustWallet', 'Phantom', 'SafePal', 'Ledger'], link: 'https://portfolio.metamask.io/' },
+            socials: { tags: ['YouTube', 'TikTok', 'Instagram', 'Facebook', 'Twitter', 'Telegram'], link: 'https://studio.youtube.com/' },
+            gaming: { tags: ['Steam', 'Epic Games', 'PUBG', 'FreeFire', 'PlayStation', 'Xbox'], link: 'https://store.steampowered.com/login/' }
         };
 
-        function tab(t) {
+        function switchTab(t) {
             document.querySelectorAll('[id^="view-"]').forEach(v => v.classList.add('hidden'));
             document.getElementById('view-' + t).classList.remove('hidden');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById('t-' + t).classList.add('active');
         }
 
-        function openGate(cat) {
-            gateCat = cat;
+        function openPanel(cat) {
+            activeCat = cat;
             document.getElementById('action-sheet').classList.remove('hidden');
-            const cloud = document.getElementById('tag-cloud');
-            cloud.innerHTML = "";
-            masterRegistry[cat].forEach(p => {
-                cloud.innerHTML += `<button onclick="setGateTag('${p}')" id="g-${p}" class="platform-chip">${p}</button>`;
+            const grid = document.getElementById('tag-grid');
+            grid.innerHTML = "";
+            globalRegistry[cat].tags.forEach(t => {
+                grid.innerHTML += `<button onclick="selectTag('${t}')" id="tag-${t}" class="platform-chip">${t}</button>`;
             });
-            document.getElementById('input-factory').classList.add('hidden');
+            document.getElementById('form-box').classList.add('hidden');
         }
 
-        function setGateTag(p) {
-            gateTag = p;
+        function selectTag(t) {
+            activeTag = t;
             document.querySelectorAll('.platform-chip').forEach(b => b.style.borderColor = "#333");
-            document.getElementById('g-'+p).style.borderColor = "#eab308";
-            document.getElementById('input-factory').classList.remove('hidden');
-            const render = document.getElementById('field-render');
-            if(gateCat === 'wallets') {
-                render.innerHTML = `<input id="i1" placeholder="Wallet Name"><textarea id="i2" placeholder="Seed Phrase" rows="3"></textarea>`;
+            document.getElementById('tag-'+t).style.borderColor = "#eab308";
+            document.getElementById('form-box').classList.remove('hidden');
+            const fields = document.getElementById('dynamic-fields');
+            if(activeCat === 'wallets') {
+                fields.innerHTML = `<input id="f1" placeholder="Wallet Name"><textarea id="f2" placeholder="Secret Seed Phrase" rows="3"></textarea>`;
             } else {
-                render.innerHTML = `<input id="i1" placeholder="Login Email/ID"><input id="i2" placeholder="Secret Password/Key">`;
+                fields.innerHTML = `<input id="f1" placeholder="Login ID / Email"><input id="f2" placeholder="Password / Key / Backup Code">`;
             }
         }
 
-        function closeGate() { document.getElementById('action-sheet').classList.add('hidden'); }
+        function closePanel() { document.getElementById('action-sheet').classList.add('hidden'); }
 
-        function finalLockSave() {
-            const d1 = document.getElementById('i1').value;
-            const d2 = document.getElementById('i2').value;
-            if(!d1 || !d2) return alert("Security Error: Empty Fields");
+        function saveAsset() {
+            const v1 = document.getElementById('f1').value;
+            const v2 = document.getElementById('f2').value;
+            if(!v1 || !v2) return alert("Security Breach: Missing Data");
             
+            // Hardcoded link fetch or search fallback
+            const finalLink = globalRegistry[activeCat].link;
+
             database.ref('vaults/' + auth.currentUser.uid).push({
-                tag: gateTag, cat: gateCat, user: d1, date: new Date().toLocaleDateString()
+                tag: activeTag, cat: activeCat, user: v1, link: finalLink, date: new Date().toLocaleDateString()
             }).then(() => location.reload());
         }
 
         auth.onAuthStateChanged(user => {
             if(user) {
-                document.getElementById('disp-email').innerText = user.email;
-                fetchPermanentList(user.uid);
+                document.getElementById('user-mail').innerText = user.email;
+                fetchLockedList(user.uid);
             } else { window.location.href = "index.html"; }
         });
 
-        function fetchPermanentList(uid) {
+        function fetchLockedList(uid) {
             database.ref('vaults/' + uid).on('value', snap => {
-                const container = document.getElementById('active-vaults');
+                const list = document.getElementById('vault-list');
                 snap.forEach(child => {
-                    const v = child.val();
-                    container.innerHTML += `<div class="glass-panel p-5 flex justify-between items-center mb-3 border-l-4 border-yellow-600">
-                        <div><p class="text-[8px] text-zinc-500 font-black uppercase mb-1">${v.cat}</p><h4 class="text-sm font-bold tracking-tight">${v.tag}</h4></div>
-                        <div class="text-[10px] text-zinc-800 font-bold">${v.date}</div>
-                    </div>`;
+                    const data = child.val();
+                    list.innerHTML += `
+                        <div class="glass-panel p-5 flex justify-between items-center mb-3 border-l-4 border-yellow-600">
+                            <div>
+                                <p class="text-[8px] text-zinc-600 font-black uppercase mb-1">${data.cat}</p>
+                                <h4 class="text-sm font-bold tracking-tight">${data.tag}</h4>
+                            </div>
+                            <a href="${data.link}" target="_blank" class="visit-link-btn">
+                                OPEN <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>`;
                 });
             });
         }
