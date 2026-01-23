@@ -9,47 +9,44 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
         body { font-family: 'Space Grotesk', sans-serif; background-color: #050505; color: #d4d4d8; }
-        .vault-card { background: linear-gradient(145deg, #0f0f0f, #18181b); border: 1px solid #27272a; border-radius: 2rem; }
+        .vault-card { background: linear-gradient(145deg, #0f0f0f, #18181b); border: 1px solid #27272a; border-radius: 1.5rem; }
+        .asset-card { background: #111; border: 1px solid #222; border-radius: 1rem; transition: 0.3s; }
+        .asset-card:hover { border-color: #eab308; }
         .hidden { display: none; }
-        .tab-active { border-bottom: 2px solid #eab308; color: #eab308; }
         .input-style { background: #000; border: 1px solid #27272a; padding: 1rem; border-radius: 1rem; width: 100%; color: white; outline: none; }
     </style>
 </head>
 <body class="pb-20">
     <div class="max-w-md mx-auto p-5 space-y-6">
-        <header class="flex flex-col items-center py-6 text-center">
-            <h1 class="text-2xl font-black text-yellow-500 italic uppercase">Digital Assets Manager</h1>
-            <p class="text-[10px] text-zinc-500 tracking-widest uppercase">Username Access Protocol</p>
-            <button id="logout-btn" onclick="logout()" class="hidden mt-4 text-[10px] bg-zinc-800 px-3 py-1 rounded-lg text-red-400 font-bold">LOGOUT</button>
+        <header class="flex justify-between items-center py-6">
+            <div>
+                <h1 class="text-xl font-black text-yellow-500 italic uppercase leading-none">Amant Vault</h1>
+                <p class="text-[8px] text-zinc-500 tracking-[0.3em] uppercase">Secure Storage</p>
+            </div>
+            <button onclick="logout()" class="text-[10px] bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-full text-red-400 font-bold uppercase">Logout</button>
         </header>
 
-        <div id="auth-container" class="vault-card p-8 shadow-2xl">
-            <div class="flex justify-around mb-8 border-b border-zinc-800">
-                <button id="tab-login" onclick="switchAuthTab('login')" class="pb-2 text-sm font-bold uppercase tab-active">Login</button>
-                <button id="tab-signup" onclick="switchAuthTab('signup')" class="pb-2 text-sm font-bold uppercase text-zinc-600">Signup</button>
-            </div>
-            
-            <div id="login-form" class="space-y-4">
-                <input type="text" id="login-user" placeholder="Enter Username" class="input-style">
-                <input type="password" id="login-pass" placeholder="Password" class="input-style">
-                <button onclick="handleLogin()" class="w-full bg-yellow-600 text-black font-black py-4 rounded-2xl uppercase shadow-lg active:scale-95">Access Vault</button>
-            </div>
-
-            <div id="signup-form" class="hidden space-y-4">
-                <input type="text" id="reg-user" placeholder="Create Unique Username" class="input-style">
-                <input type="password" id="reg-pass" placeholder="Create Password" class="input-style">
-                <button onclick="handleSignup()" class="w-full bg-yellow-600 text-black font-black py-4 rounded-2xl uppercase shadow-lg active:scale-95">Register User</button>
-            </div>
+        <div id="digital-safe" class="vault-card p-6 border-t-2 border-t-yellow-600 shadow-2xl">
+            <h3 class="text-xs font-black uppercase mb-4 text-yellow-500 flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved"></i> New Asset Entry
+            </h3>
+            <textarea id="secret-data" rows="3" placeholder="Paste Private Key, Password or Seed Phrase..." class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-yellow-500 outline-none font-mono text-sm mb-4 focus:border-yellow-600 transition-all"></textarea>
+            <button onclick="encryptAndSave()" class="w-full bg-yellow-600 text-black font-black py-4 rounded-xl uppercase tracking-tighter hover:bg-yellow-500 active:scale-95 transition-all">
+                Encrypt & Lock Asset
+            </button>
         </div>
 
-        <div id="digital-safe" class="hidden space-y-6">
-            <div class="vault-card p-6 border-l-4 border-l-yellow-600">
-                <h3 class="text-sm font-black uppercase mb-4 text-yellow-500">Secure Assets</h3>
-                <textarea id="secret-data" rows="4" placeholder="Put your secret information here..." class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-yellow-500 outline-none font-mono"></textarea>
-                <button onclick="encryptAndSave()" class="w-full bg-yellow-600 text-black font-black py-3 rounded-xl uppercase mt-2">Encrypt & Save</button>
+        <div class="space-y-4">
+            <div class="flex items-center justify-between px-2">
+                <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Your Secured Vault</h3>
+                <span id="asset-count" class="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-white">0</span>
+            </div>
+            <div id="assets-list" class="space-y-3">
+                <p id="empty-msg" class="text-center text-zinc-600 text-xs py-10">No assets found in vault.</p>
             </div>
         </div>
     </div>
@@ -68,51 +65,97 @@
         const auth = firebase.auth();
         const database = firebase.database();
 
-        function switchAuthTab(tab) {
-            document.getElementById('login-form').classList.toggle('hidden', tab === 'signup');
-            document.getElementById('signup-form').classList.toggle('hidden', tab === 'login');
-            document.getElementById('tab-login').classList.toggle('tab-active', tab === 'login');
-            document.getElementById('tab-signup').classList.toggle('tab-active', tab === 'signup');
-        }
-
-        async function handleSignup() {
-            const user = document.getElementById('reg-user').value;
-            const pass = document.getElementById('reg-pass').value;
-            if(!user || !pass) return alert("Fields cannot be empty");
-            
-            // Converting username to dummy email format for Firebase
-            const fakeEmail = user.trim() + "@amant.com";
-            try {
-                await auth.createUserWithEmailAndPassword(fakeEmail, pass);
-                alert("Username Registered!");
-            } catch (e) { alert("Error: Use a unique username"); }
-        }
-
-        async function handleLogin() {
-            const user = document.getElementById('login-user').value;
-            const pass = document.getElementById('login-pass').value;
-            const fakeEmail = user.trim() + "@amant.com";
-            try {
-                await auth.signInWithEmailAndPassword(fakeEmail, pass);
-            } catch (e) { alert("Wrong Username or Password"); }
-        }
-
+        // Check Login State
         auth.onAuthStateChanged((user) => {
-            if (user) {
-                document.getElementById('auth-container').classList.add('hidden');
-                document.getElementById('digital-safe').classList.remove('hidden');
-                document.getElementById('logout-btn').classList.remove('hidden');
+            if (!user) {
+                window.location.href = "index.html"; // Agar login na ho to wapas bhej de
+            } else {
+                fetchAssets(user.uid);
             }
         });
 
         function logout() { auth.signOut(); location.reload(); }
 
+        // Save Data
         function encryptAndSave() {
             const data = document.getElementById('secret-data').value;
-            if(!data) return alert("Enter some data first");
-            const encrypted = CryptoJS.AES.encrypt(data, "VAULT_KEY_2026").toString();
-            database.ref('vaults/' + auth.currentUser.uid).push({ payload: encrypted, time: Date.now() })
-            .then(() => alert("Asset Secured!"));
+            if(!data) return alert("Empty input!");
+            
+            const encrypted = CryptoJS.AES.encrypt(data, "VAULT_SECRET_2026").toString();
+            database.ref('vaults/' + auth.currentUser.uid).push({
+                payload: encrypted,
+                date: new Date().toLocaleString()
+            }).then(() => {
+                document.getElementById('secret-data').value = "";
+                alert("Data Securely Stored!");
+            });
+        }
+
+        // Fetch & Show Data
+        function fetchAssets(uid) {
+            database.ref('vaults/' + uid).on('value', (snapshot) => {
+                const list = document.getElementById('assets-list');
+                list.innerHTML = "";
+                let count = 0;
+                
+                if (snapshot.exists()) {
+                    document.getElementById('empty-msg').classList.add('hidden');
+                    snapshot.forEach((child) => {
+                        count++;
+                        const item = child.val();
+                        const card = `
+                            <div class="asset-card p-4 flex flex-col gap-3">
+                                <div class="flex justify-between items-start">
+                                    <span class="text-[9px] text-zinc-500 font-mono">${item.date}</span>
+                                    <button onclick="deleteAsset('${child.key}')" class="text-zinc-700 hover:text-red-500"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                                </div>
+                                <div class="relative">
+                                    <input type="password" id="val-${child.key}" value="${item.payload}" readonly 
+                                        class="bg-transparent text-yellow-500/50 font-mono text-xs w-full outline-none">
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="toggleView('${child.key}')" class="flex-1 bg-zinc-800 text-[9px] font-bold py-2 rounded-lg uppercase tracking-widest">Decrypt</button>
+                                    <button onclick="copyToClipboard('${child.key}')" class="flex-1 bg-zinc-800 text-[9px] font-bold py-2 rounded-lg uppercase tracking-widest text-yellow-500">Copy</button>
+                                </div>
+                            </div>
+                        `;
+                        list.innerHTML = card + list.innerHTML;
+                    });
+                }
+                document.getElementById('asset-count').innerText = count;
+            });
+        }
+
+        function toggleView(id) {
+            const input = document.getElementById('val-' + id);
+            if (input.type === "password") {
+                const bytes = CryptoJS.AES.decrypt(input.value, "VAULT_SECRET_2026");
+                input.value = bytes.toString(CryptoJS.enc.Utf8);
+                input.type = "text";
+                input.classList.add('text-white');
+            } else {
+                location.reload(); // Re-fetch to mask again
+            }
+        }
+
+        function copyToClipboard(id) {
+            const input = document.getElementById('val-' + id);
+            let valToCopy = input.value;
+            
+            // If still encrypted, decrypt before copying
+            if(input.type === "password") {
+                const bytes = CryptoJS.AES.decrypt(input.value, "VAULT_SECRET_2026");
+                valToCopy = bytes.toString(CryptoJS.enc.Utf8);
+            }
+            
+            navigator.clipboard.writeText(valToCopy);
+            alert("Copied to clipboard!");
+        }
+
+        function deleteAsset(key) {
+            if(confirm("Delete this asset permanently?")) {
+                database.ref('vaults/' + auth.currentUser.uid + '/' + key).remove();
+            }
         }
     </script>
 </body>
