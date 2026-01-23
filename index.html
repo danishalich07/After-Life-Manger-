@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Assets Manager</title>
+    <title>Amant Vault Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -12,44 +12,70 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
-        body { font-family: 'Space Grotesk', sans-serif; background-color: #050505; color: #d4d4d8; }
+        body { font-family: 'Space Grotesk', sans-serif; background-color: #050505; color: #d4d4d8; overflow-x: hidden; }
         .vault-card { background: linear-gradient(145deg, #0f0f0f, #18181b); border: 1px solid #27272a; border-radius: 1.5rem; }
-        .asset-card { background: #111; border: 1px solid #222; border-radius: 1rem; transition: 0.3s; }
-        .asset-card:hover { border-color: #eab308; }
+        .asset-card { background: #111; border: 1px solid #222; border-radius: 1rem; }
+        .nav-item { color: #52525b; transition: 0.3s; }
+        .nav-active { color: #eab308; }
         .hidden { display: none; }
         .input-style { background: #000; border: 1px solid #27272a; padding: 1rem; border-radius: 1rem; width: 100%; color: white; outline: none; }
     </style>
 </head>
-<body class="pb-20">
+<body class="pb-24">
     <div class="max-w-md mx-auto p-5 space-y-6">
-        <header class="flex justify-between items-center py-6">
+        
+        <header class="flex justify-between items-center py-4">
             <div>
-                <h1 class="text-xl font-black text-yellow-500 italic uppercase leading-none">Amant Vault</h1>
-                <p class="text-[8px] text-zinc-500 tracking-[0.3em] uppercase">Secure Storage</p>
+                <h1 id="page-title" class="text-xl font-black text-yellow-500 italic uppercase">Vault</h1>
+                <p id="user-display" class="text-[9px] text-zinc-500 uppercase tracking-widest font-bold">Loading...</p>
             </div>
-            <button onclick="logout()" class="text-[10px] bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-full text-red-400 font-bold uppercase">Logout</button>
+            <div class="h-10 w-10 bg-zinc-900 rounded-full border border-yellow-600/30 flex items-center justify-center">
+                <i class="fa-solid fa-user-shield text-yellow-600 text-sm"></i>
+            </div>
         </header>
 
-        <div id="digital-safe" class="vault-card p-6 border-t-2 border-t-yellow-600 shadow-2xl">
-            <h3 class="text-xs font-black uppercase mb-4 text-yellow-500 flex items-center gap-2">
-                <i class="fa-solid fa-shield-halved"></i> New Asset Entry
-            </h3>
-            <textarea id="secret-data" rows="3" placeholder="Paste Private Key, Password or Seed Phrase..." class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-yellow-500 outline-none font-mono text-sm mb-4 focus:border-yellow-600 transition-all"></textarea>
-            <button onclick="encryptAndSave()" class="w-full bg-yellow-600 text-black font-black py-4 rounded-xl uppercase tracking-tighter hover:bg-yellow-500 active:scale-95 transition-all">
-                Encrypt & Lock Asset
-            </button>
+        <div id="section-vault" class="space-y-6">
+            <div class="vault-card p-6 border-t-2 border-t-yellow-600 shadow-2xl">
+                <textarea id="secret-data" rows="3" placeholder="Enter Secret Key or Data..." class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-yellow-500 outline-none font-mono text-sm mb-4"></textarea>
+                <button onclick="encryptAndSave()" class="w-full bg-yellow-600 text-black font-black py-4 rounded-xl uppercase active:scale-95 transition-all">Lock in Vault</button>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest px-2">Secure Records</h3>
+                <div id="assets-list" class="space-y-3">
+                    </div>
+            </div>
         </div>
 
-        <div class="space-y-4">
-            <div class="flex items-center justify-between px-2">
-                <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Your Secured Vault</h3>
-                <span id="asset-count" class="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-white">0</span>
+        <div id="section-profile" class="hidden space-y-6 animate-fade-in">
+            <div class="vault-card p-6 space-y-4">
+                <h3 class="text-xs font-black uppercase text-yellow-500">Security Settings</h3>
+                <div class="space-y-2">
+                    <label class="text-[10px] text-zinc-500 uppercase ml-1">Update Password</label>
+                    <input type="password" id="new-pass" placeholder="Enter New Password" class="input-style text-sm">
+                    <button onclick="updatePassword()" class="w-full bg-zinc-800 text-white font-bold py-3 rounded-xl text-xs uppercase">Update Security</button>
+                </div>
             </div>
-            <div id="assets-list" class="space-y-3">
-                <p id="empty-msg" class="text-center text-zinc-600 text-xs py-10">No assets found in vault.</p>
+
+            <div class="vault-card p-6 border-l-4 border-l-red-600">
+                <h3 class="text-xs font-black uppercase text-red-500 mb-4">Danger Zone</h3>
+                <button onclick="logout()" class="w-full bg-red-900/20 border border-red-900 text-red-500 font-bold py-3 rounded-xl text-xs uppercase mb-3">Sign Out</button>
+                <p class="text-[8px] text-zinc-600 text-center uppercase">App Version 1.0.4 - Secure Protocol</p>
             </div>
         </div>
+
     </div>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-lg border-t border-zinc-800 px-10 py-4 flex justify-between items-center max-w-md mx-auto">
+        <button onclick="showSection('vault')" id="btn-vault" class="nav-item nav-active flex flex-col items-center gap-1">
+            <i class="fa-solid fa-vault text-lg"></i>
+            <span class="text-[8px] font-bold uppercase">Vault</span>
+        </button>
+        <button onclick="showSection('profile')" id="btn-profile" class="nav-item flex flex-col items-center gap-1">
+            <i class="fa-solid fa-gear text-lg"></i>
+            <span class="text-[8px] font-bold uppercase">Settings</span>
+        </button>
+    </nav>
 
     <script>
         const firebaseConfig = {
@@ -65,98 +91,96 @@
         const auth = firebase.auth();
         const database = firebase.database();
 
-        // Check Login State
         auth.onAuthStateChanged((user) => {
-            if (!user) {
-                window.location.href = "index.html"; // Agar login na ho to wapas bhej de
-            } else {
+            if (user) {
+                document.getElementById('user-display').innerText = user.email.split('@')[0];
                 fetchAssets(user.uid);
+            } else {
+                window.location.href = "index.html";
             }
         });
 
-        function logout() { auth.signOut(); location.reload(); }
+        function showSection(section) {
+            document.getElementById('section-vault').classList.toggle('hidden', section !== 'vault');
+            document.getElementById('section-profile').classList.toggle('hidden', section !== 'profile');
+            document.getElementById('btn-vault').classList.toggle('nav-active', section === 'vault');
+            document.getElementById('btn-profile').classList.toggle('nav-active', section === 'profile');
+            document.getElementById('page-title').innerText = section === 'vault' ? "Vault" : "Settings";
+        }
 
-        // Save Data
+        async function updatePassword() {
+            const newPass = document.getElementById('new-pass').value;
+            if(newPass.length < 6) return alert("Password too short!");
+            try {
+                await auth.currentUser.updatePassword(newPass);
+                alert("Password Updated Successfully!");
+                document.getElementById('new-pass').value = "";
+            } catch (e) { alert(e.message); }
+        }
+
         function encryptAndSave() {
             const data = document.getElementById('secret-data').value;
-            if(!data) return alert("Empty input!");
-            
+            if(!data) return;
             const encrypted = CryptoJS.AES.encrypt(data, "VAULT_SECRET_2026").toString();
             database.ref('vaults/' + auth.currentUser.uid).push({
                 payload: encrypted,
-                date: new Date().toLocaleString()
+                date: new Date().toLocaleDateString()
             }).then(() => {
                 document.getElementById('secret-data').value = "";
-                alert("Data Securely Stored!");
             });
         }
 
-        // Fetch & Show Data
         function fetchAssets(uid) {
             database.ref('vaults/' + uid).on('value', (snapshot) => {
                 const list = document.getElementById('assets-list');
                 list.innerHTML = "";
-                let count = 0;
-                
-                if (snapshot.exists()) {
-                    document.getElementById('empty-msg').classList.add('hidden');
-                    snapshot.forEach((child) => {
-                        count++;
-                        const item = child.val();
-                        const card = `
-                            <div class="asset-card p-4 flex flex-col gap-3">
-                                <div class="flex justify-between items-start">
-                                    <span class="text-[9px] text-zinc-500 font-mono">${item.date}</span>
-                                    <button onclick="deleteAsset('${child.key}')" class="text-zinc-700 hover:text-red-500"><i class="fa-solid fa-trash-can text-xs"></i></button>
-                                </div>
-                                <div class="relative">
-                                    <input type="password" id="val-${child.key}" value="${item.payload}" readonly 
-                                        class="bg-transparent text-yellow-500/50 font-mono text-xs w-full outline-none">
-                                </div>
-                                <div class="flex gap-2">
-                                    <button onclick="toggleView('${child.key}')" class="flex-1 bg-zinc-800 text-[9px] font-bold py-2 rounded-lg uppercase tracking-widest">Decrypt</button>
-                                    <button onclick="copyToClipboard('${child.key}')" class="flex-1 bg-zinc-800 text-[9px] font-bold py-2 rounded-lg uppercase tracking-widest text-yellow-500">Copy</button>
-                                </div>
+                snapshot.forEach((child) => {
+                    const item = child.val();
+                    list.innerHTML = `
+                        <div class="asset-card p-4 flex flex-col gap-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[8px] text-zinc-600 font-mono">${item.date}</span>
+                                <button onclick="deleteItem('${child.key}')"><i class="fa-solid fa-trash text-[10px] text-zinc-800 hover:text-red-500"></i></button>
                             </div>
-                        `;
-                        list.innerHTML = card + list.innerHTML;
-                    });
-                }
-                document.getElementById('asset-count').innerText = count;
+                            <input type="password" id="val-${child.key}" value="${item.payload}" readonly class="bg-transparent text-yellow-500/40 text-xs font-mono outline-none">
+                            <div class="flex gap-2 mt-2">
+                                <button onclick="toggleKey('${child.key}')" class="flex-1 bg-zinc-900 text-[8px] font-bold py-2 rounded-lg uppercase">View</button>
+                                <button onclick="copyKey('${child.key}')" class="flex-1 bg-zinc-900 text-[8px] font-bold py-2 rounded-lg uppercase text-yellow-600">Copy</button>
+                            </div>
+                        </div>
+                    ` + list.innerHTML;
+                });
             });
         }
 
-        function toggleView(id) {
+        function toggleKey(id) {
             const input = document.getElementById('val-' + id);
-            if (input.type === "password") {
+            if(input.type === "password") {
                 const bytes = CryptoJS.AES.decrypt(input.value, "VAULT_SECRET_2026");
                 input.value = bytes.toString(CryptoJS.enc.Utf8);
                 input.type = "text";
-                input.classList.add('text-white');
+                input.classList.remove('text-yellow-500/40');
             } else {
-                location.reload(); // Re-fetch to mask again
+                location.reload();
             }
         }
 
-        function copyToClipboard(id) {
+        function copyKey(id) {
             const input = document.getElementById('val-' + id);
-            let valToCopy = input.value;
-            
-            // If still encrypted, decrypt before copying
+            let text = input.value;
             if(input.type === "password") {
-                const bytes = CryptoJS.AES.decrypt(input.value, "VAULT_SECRET_2026");
-                valToCopy = bytes.toString(CryptoJS.enc.Utf8);
+                const bytes = CryptoJS.AES.decrypt(text, "VAULT_SECRET_2026");
+                text = bytes.toString(CryptoJS.enc.Utf8);
             }
-            
-            navigator.clipboard.writeText(valToCopy);
-            alert("Copied to clipboard!");
+            navigator.clipboard.writeText(text);
+            alert("Copied!");
         }
 
-        function deleteAsset(key) {
-            if(confirm("Delete this asset permanently?")) {
-                database.ref('vaults/' + auth.currentUser.uid + '/' + key).remove();
-            }
+        function deleteItem(key) {
+            if(confirm("Delete permanently?")) database.ref('vaults/' + auth.currentUser.uid + '/' + key).remove();
         }
+
+        function logout() { auth.signOut(); }
     </script>
 </body>
 </html>
