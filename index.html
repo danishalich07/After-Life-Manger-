@@ -3,166 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amant Legacy - Digital OS</title>
+    <title>Amant Legacy - Encrypted OS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #000; color: #fff; margin: 0; overflow: hidden; }
-        .app-container { height: 100vh; display: flex; flex-direction: column; }
-        .main-content { flex: 1; overflow-y: auto; padding-bottom: 100px; }
-        .glass-panel { background: rgba(18, 18, 18, 0.98); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.06); border-radius: 24px; }
-        
-        /* In-App Browser Styles */
+        .glass-panel { background: rgba(12, 12, 12, 0.98); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.05); border-radius: 30px; }
         #browser-overlay { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; flex-direction: column; }
-        .browser-header { padding: 15px; background: #111; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
-        iframe { width: 100%; flex: 1; border: none; background: #fff; }
-
-        .nav-bar { position: fixed; bottom: 0; width: 100%; max-width: 450px; left: 50%; transform: translateX(-50%); background: #080808; border-top: 1px solid #222; display: flex; justify-content: space-around; padding: 20px 0; z-index: 1000; }
-        .access-card { background: linear-gradient(145deg, #151515, #0a0a0a); border-radius: 20px; border: 1px solid #222; transition: 0.3s; }
-        .access-card:active { transform: scale(0.98); border-color: #eab308; }
+        iframe { width: 100%; flex: 1; border: none; background: #fff; border-radius: 20px 20px 0 0; }
+        .nav-bar { position: fixed; bottom: 0; width: 100%; max-width: 450px; left: 50%; transform: translateX(-50%); background: #050505; border-top: 1px solid #1a1a1a; display: flex; justify-content: space-around; padding: 22px 0; z-index: 1000; }
+        .access-card { background: #0f0f0f; border-radius: 24px; border: 1px solid #1a1a1a; padding: 20px; transition: 0.3s; margin-bottom: 12px; }
+        .access-card:active { border-color: #eab308; background: #14140a; }
+        input, textarea { background: #080808 !important; border: 1px solid #222 !important; color: #fff !important; border-radius: 16px; padding: 18px; width: 100%; margin-bottom: 15px; outline: none; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
     <div id="browser-overlay">
-        <div class="browser-header">
-            <button onclick="closeBrowser()" class="text-zinc-400 text-xs uppercase font-black"><i class="fa-solid fa-xmark mr-2"></i> Close Gateway</button>
-            <span id="browser-title" class="text-[10px] font-bold text-yellow-600 uppercase tracking-widest">Secure Access</span>
-            <i class="fa-solid fa-lock text-green-500"></i>
+        <div class="p-5 flex justify-between items-center bg-[#0a0a0a]">
+            <button onclick="closeBrowser()" class="text-zinc-500 font-bold text-xs uppercase tracking-widest"><i class="fa-solid fa-chevron-left mr-2"></i> Vault</button>
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-shield-check text-green-500 text-xs"></i>
+                <span id="target-name" class="text-[10px] font-black uppercase text-white tracking-widest">Secure Session</span>
+            </div>
+            <button onclick="location.reload()" class="text-zinc-500"><i class="fa-solid fa-rotate-right"></i></button>
         </div>
-        <iframe id="web-frame" src=""></iframe>
+        <iframe id="web-frame" sandbox="allow-forms allow-scripts allow-same-origin allow-popups" src=""></iframe>
     </div>
 
-    <div class="app-container max-w-md mx-auto px-6">
+    <div class="max-w-md mx-auto px-6 h-screen flex flex-col">
         <header class="py-10 flex justify-between items-center">
             <div>
-                <p class="text-yellow-600 text-[9px] font-black uppercase tracking-[0.4em] mb-1">Universal OS Active</p>
-                <h1 class="text-2xl font-black italic tracking-tighter">DanishAlich07</h1>
+                <p class="text-yellow-600 text-[9px] font-black uppercase tracking-[0.4em]">Military Grade Encryption</p>
+                <h1 class="text-2xl font-black italic">Amant Legacy</h1>
             </div>
-            <div class="h-10 w-10 glass-panel flex items-center justify-center"><i class="fa-solid fa-cloud text-yellow-500"></i></div>
+            <div class="h-12 w-12 glass-panel flex items-center justify-center border-yellow-600/20 shadow-lg shadow-yellow-600/5">
+                <i class="fa-solid fa-shuttle-space text-yellow-500"></i>
+            </div>
         </header>
 
-        <div class="main-content">
-            <div class="grid grid-cols-4 gap-2 mb-10">
-                <button onclick="openPanel('exchanges')" class="flex flex-col items-center gap-2">
-                    <div class="h-14 w-14 glass-panel flex items-center justify-center border-b-2 border-blue-500"><i class="fa-solid fa-chart-line text-blue-500"></i></div>
-                    <span class="text-[8px] font-bold uppercase">Trade</span>
+        <div id="view-vault" class="flex-1 overflow-y-auto pb-32">
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <button onclick="openAddPanel('exchanges')" class="glass-panel p-6 flex flex-col items-center gap-2 border-b-4 border-blue-600/30">
+                    <i class="fa-solid fa-chart-line text-blue-500"></i><span class="text-[9px] font-bold uppercase tracking-widest">Trade</span>
                 </button>
-                <button onclick="openPanel('wallets')" class="flex flex-col items-center gap-2">
-                    <div class="h-14 w-14 glass-panel flex items-center justify-center border-b-2 border-orange-500"><i class="fa-solid fa-wallet text-orange-500"></i></div>
-                    <span class="text-[8px] font-bold uppercase">Web3</span>
-                </button>
-                <button onclick="openPanel('socials')" class="flex flex-col items-center gap-2">
-                    <div class="h-14 w-14 glass-panel flex items-center justify-center border-b-2 border-pink-500"><i class="fa-solid fa-hashtag text-pink-500"></i></div>
-                    <span class="text-[8px] font-bold uppercase">Social</span>
-                </button>
-                <button onclick="openPanel('gaming')" class="flex flex-col items-center gap-2">
-                    <div class="h-14 w-14 glass-panel flex items-center justify-center border-b-2 border-green-500"><i class="fa-solid fa-gamepad text-green-500"></i></div>
-                    <span class="text-[8px] font-bold uppercase">Gaming</span>
+                <button onclick="openAddPanel('wallets')" class="glass-panel p-6 flex flex-col items-center gap-2 border-b-4 border-orange-600/30">
+                    <i class="fa-solid fa-wallet text-orange-500"></i><span class="text-[9px] font-bold uppercase tracking-widest">Web3</span>
                 </button>
             </div>
 
-            <div id="vault-list" class="space-y-4">
-                <p class="text-[10px] font-bold text-zinc-600 uppercase tracking-widest border-b border-zinc-900 pb-2 italic">Your Unified Accounts</p>
+            <div id="master-list">
+                <p class="text-[10px] font-black text-zinc-700 uppercase tracking-[0.2em] mb-4">Encrypted Assets</p>
             </div>
         </div>
 
-        <div id="action-sheet" class="hidden fixed inset-0 z-[2000] flex items-end">
-            <div class="absolute inset-0 bg-black/95" onclick="closePanel()"></div>
-            <div class="glass-panel w-full rounded-t-[40px] p-10 relative z-[2001] border-t border-yellow-600/30">
-                <div id="tag-grid" class="grid grid-cols-3 gap-2 mb-6"></div>
+        <div id="add-modal" class="hidden fixed inset-0 z-[2000] flex items-end">
+            <div class="absolute inset-0 bg-black/95" onclick="closeAddPanel()"></div>
+            <div class="glass-panel w-full p-10 rounded-t-[40px] relative z-[2001] border-t border-yellow-600/20">
+                <h2 class="text-lg font-bold mb-6 text-yellow-500 uppercase italic">Add To Encrypted Cloud</h2>
+                <div id="platform-tags" class="grid grid-cols-3 gap-2 mb-6"></div>
                 <div id="form-box" class="hidden">
-                    <input id="f1" placeholder="Account Email/ID">
-                    <input id="f2" placeholder="Password/Key">
-                    <button onclick="saveAsset()" class="w-full bg-yellow-600 text-black font-black py-4 rounded-2xl uppercase text-xs mt-2">Secure Permanently</button>
+                    <input id="u-id" placeholder="Account Email / Username">
+                    <input id="u-pass" type="password" placeholder="Account Password">
+                    <button onclick="encryptAndSave()" class="w-full bg-yellow-600 text-black font-black py-5 rounded-2xl uppercase text-xs tracking-widest">Seal & Upload</button>
                 </div>
             </div>
         </div>
 
         <nav class="nav-bar">
-            <div class="text-yellow-500 text-center"><i class="fa-solid fa-house-chimney-window text-xl"></i><br><span class="text-[8px] font-black uppercase">Home</span></div>
-            <div class="text-zinc-600 text-center"><i class="fa-solid fa-user-gear text-xl"></i><br><span class="text-[8px] font-black uppercase">Profile</span></div>
+            <div class="text-yellow-500 flex flex-col items-center gap-1"><i class="fa-solid fa-grid-2 text-xl"></i><span class="text-[8px] font-bold">OS</span></div>
+            <div class="text-zinc-700 flex flex-col items-center gap-1" onclick="auth.signOut()"><i class="fa-solid fa-power-off text-xl"></i><span class="text-[8px] font-bold">EXIT</span></div>
         </nav>
     </div>
 
     <script>
-        // Firebase Config
         const firebaseConfig = { apiKey: "AIzaSyBKWHEn8-x7KZXAcPDJWfceeNc1snOQuR0", authDomain: "amant-manger.firebaseapp.com", projectId: "amant-manger", databaseURL: "https://amant-manger-default-rtdb.firebaseio.com" };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const auth = firebase.auth();
 
-        const accessMap = {
-            exchanges: { tags: ['Binance', 'OKX', 'ByBit'], link: 'https://accounts.binance.com/' },
-            wallets: { tags: ['MetaMask', 'TrustWallet'], link: 'https://portfolio.metamask.io/' },
-            socials: { tags: ['YouTube', 'Instagram', 'TikTok'], link: 'https://studio.youtube.com/' },
-            gaming: { tags: ['Steam', 'Epic', 'PUBG'], link: 'https://store.steampowered.com/login/' }
+        // 1. MASTER KEY: Ye key server par nahi jati, sirf user ke device par rehti hai logic ke liye
+        const MASTER_SECRET = "AMANT_2026_SECURE_KEY_X"; 
+
+        const registry = {
+            exchanges: { tags: ['Binance', 'OKX', 'ByBit', 'KuCoin'], link: 'https://accounts.binance.com/' },
+            wallets: { tags: ['MetaMask', 'TrustWallet', 'Phantom'], link: 'https://portfolio.metamask.io/' }
         };
 
         let activeCat = ""; let activeTag = "";
 
-        function openPanel(cat) {
+        function openAddPanel(cat) {
             activeCat = cat;
-            document.getElementById('action-sheet').classList.remove('hidden');
-            const grid = document.getElementById('tag-grid');
-            grid.innerHTML = "";
-            accessMap[cat].tags.forEach(t => {
-                grid.innerHTML += `<button onclick="selectTag('${t}')" class="bg-[#111] border border-[#333] p-3 rounded-xl text-[9px] font-bold text-zinc-500">${t}</button>`;
+            document.getElementById('add-modal').classList.remove('hidden');
+            const tags = document.getElementById('platform-tags');
+            tags.innerHTML = "";
+            registry[cat].tags.forEach(t => {
+                tags.innerHTML += `<button onclick="selectTag('${t}')" class="bg-[#111] border border-[#222] p-3 rounded-xl text-[9px] font-bold">${t}</button>`;
             });
         }
 
-        function selectTag(t) {
-            activeTag = t;
-            document.getElementById('form-box').classList.remove('hidden');
-        }
+        function selectTag(t) { activeTag = t; document.getElementById('form-box').classList.remove('hidden'); }
+        function closeAddPanel() { document.getElementById('add-modal').classList.add('hidden'); }
 
-        function saveAsset() {
-            const v1 = document.getElementById('f1').value;
-            const v2 = document.getElementById('f2').value;
+        // 2. ENCRYPTION LOGIC: Server ko pata hi nahi chalega data kya hai
+        function encryptAndSave() {
+            const rawId = document.getElementById('u-id').value;
+            const rawPass = document.getElementById('u-pass').value;
+            
+            if(!rawId || !rawPass) return alert("Security Error: Empty Fields");
+
+            // Encrypting before sending to Firebase
+            const encryptedID = CryptoJS.AES.encrypt(rawId, MASTER_SECRET).toString();
+            const encryptedPass = CryptoJS.AES.encrypt(rawPass, MASTER_SECRET).toString();
+
             database.ref('vaults/' + auth.currentUser.uid).push({
-                tag: activeTag, cat: activeCat, user: v1, pass: v2, link: accessMap[activeCat].link
+                tag: activeTag,
+                cat: activeCat,
+                id: encryptedID,
+                key: encryptedPass,
+                link: registry[activeCat].link
             }).then(() => location.reload());
         }
 
-        // BROWSER LOGIC
-        function launchGateway(url, title) {
+        function launchApp(url, title) {
             document.getElementById('browser-overlay').style.display = 'flex';
             document.getElementById('web-frame').src = url;
-            document.getElementById('browser-title').innerText = title + " Secure Gateway";
+            document.getElementById('target-name').innerText = title;
         }
 
-        function closeBrowser() {
-            document.getElementById('browser-overlay').style.display = 'none';
-            document.getElementById('web-frame').src = "";
-        }
+        function closeBrowser() { document.getElementById('browser-overlay').style.display = 'none'; document.getElementById('web-frame').src = ""; }
 
-        auth.onAuthStateChanged(user => { if(user) fetchList(user.uid); });
+        auth.onAuthStateChanged(user => { if(user) fetchEncryptedData(user.uid); else window.location.href="index.html"; });
 
-        function fetchList(uid) {
+        function fetchEncryptedData(uid) {
             database.ref('vaults/' + uid).on('value', snap => {
-                const list = document.getElementById('vault-list');
+                const list = document.getElementById('master-list');
                 snap.forEach(child => {
-                    const d = child.val();
+                    const data = child.val();
+                    
+                    // 3. DECRYPTION: Data sirf user ki screen par decrypt hoga
+                    const decryptedID = CryptoJS.AES.decrypt(data.id, MASTER_SECRET).toString(CryptoJS.enc.Utf8);
+
                     list.innerHTML += `
-                        <div onclick="launchGateway('${d.link}', '${d.tag}')" class="access-card p-5 flex justify-between items-center mb-3">
+                        <div onclick="launchApp('${data.link}', '${data.tag}')" class="access-card flex justify-between items-center">
                             <div>
-                                <p class="text-[8px] text-zinc-600 font-black uppercase mb-1">${d.cat}</p>
-                                <h4 class="text-sm font-bold tracking-tight">${d.tag}</h4>
-                                <p class="text-[10px] text-yellow-600/60 mt-1">${d.user}</p>
+                                <p class="text-[8px] text-zinc-600 font-bold uppercase">${data.cat}</p>
+                                <h4 class="text-sm font-black uppercase text-white">${data.tag}</h4>
+                                <p class="text-[10px] text-yellow-600 font-medium mt-1">${decryptedID}</p>
                             </div>
-                            <div class="h-10 w-10 rounded-full bg-yellow-600/10 flex items-center justify-center border border-yellow-600/20">
-                                <i class="fa-solid fa-arrow-right-to-bracket text-yellow-600"></i>
+                            <div class="h-10 w-10 rounded-full bg-yellow-600/5 border border-yellow-600/10 flex items-center justify-center">
+                                <i class="fa-solid fa-up-right-from-square text-[10px] text-yellow-600"></i>
                             </div>
                         </div>`;
                 });
             });
         }
-        function closePanel() { document.getElementById('action-sheet').classList.add('hidden'); }
     </script>
 </body>
 </html>
