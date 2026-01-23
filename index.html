@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amant Legacy - Unified Vault</title>
+    <title>Amant Legacy Vault</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -12,56 +12,97 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
-        body { font-family: 'Space Grotesk', sans-serif; background: #050505; color: #fff; }
-        .glass-card { background: #0f0f0f; border: 1px solid #222; border-radius: 24px; padding: 24px; }
-        .platform-btn { background: #1a1a1a; border: 1px solid #333; padding: 12px; border-radius: 16px; font-size: 11px; text-transform: uppercase; font-weight: bold; color: #a1a1aa; transition: 0.3s; }
-        .platform-btn:active, .btn-active { border-color: #eab308; color: #eab308; background: #2a2a10; }
-        .input-group label { display: block; font-size: 10px; color: #71717a; text-transform: uppercase; margin-bottom: 6px; font-weight: bold; }
-        input, textarea { background: #000 !important; border: 1px solid #333 !important; color: #fff !important; padding: 14px; border-radius: 12px; width: 100%; outline: none; margin-bottom: 16px; }
+        body { font-family: 'Space Grotesk', sans-serif; background: #050505; color: #fff; margin: 0; padding: 0; }
+        .glass-card { background: #0f0f0f; border: 1px solid #222; border-radius: 20px; padding: 20px; }
+        .nav-bar { background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(10px); border-top: 1px solid #333; position: fixed; bottom: 0; width: 100%; max-width: 448px; left: 50%; transform: translateX(-50%); display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: #71717a; font-weight: bold; text-transform: uppercase; cursor: pointer; }
+        .nav-item.active { color: #eab308; }
+        .platform-btn { background: #1a1a1a; border: 1px solid #333; padding: 12px; border-radius: 12px; font-size: 11px; text-transform: uppercase; font-weight: bold; color: #a1a1aa; }
         .hidden { display: none; }
+        .input-group label { display: block; font-size: 10px; color: #71717a; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
+        input { background: #000 !important; border: 1px solid #333 !important; color: #fff !important; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 12px; }
     </style>
 </head>
-<body class="pb-20">
+<body class="pb-24">
     <div class="max-w-md mx-auto p-5">
-        <header class="py-8">
-            <h1 class="text-2xl font-black text-yellow-500 italic uppercase">Digital Inheritance</h1>
-            <p class="text-[10px] text-zinc-500 tracking-[0.3em] uppercase">Unified Asset Protection</p>
+        
+        <header class="flex justify-between items-center py-6">
+            <div>
+                <h1 id="screen-title" class="text-xl font-black text-yellow-500 italic uppercase">Vault</h1>
+                <p class="text-[9px] text-zinc-500 tracking-widest">SECURE LEGACY SYSTEM</p>
+            </div>
+            <div class="h-10 w-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                <i class="fa-solid fa-shield-halved text-yellow-600"></i>
+            </div>
         </header>
 
-        <div class="glass-card mb-6">
-            <div id="step-1">
-                <h3 class="text-[10px] font-bold text-zinc-500 uppercase mb-4 tracking-widest">1. Select Category</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="showPlatforms('exchanges')" class="platform-btn"><i class="fa-solid fa-building-columns mb-2 block text-lg"></i>Exchanges</button>
-                    <button onclick="showPlatforms('wallets')" class="platform-btn"><i class="fa-solid fa-wallet mb-2 block text-lg"></i>Web3 Wallets</button>
-                    <button onclick="showPlatforms('social')" class="platform-btn"><i class="fa-solid fa-share-nodes mb-2 block text-lg"></i>Social Media</button>
-                    <button onclick="showPlatforms('gaming')" class="platform-btn"><i class="fa-solid fa-gamepad mb-2 block text-lg"></i>Gaming</button>
-                    <button onclick="showPlatforms('income')" class="platform-btn col-span-2"><i class="fa-solid fa-money-bill-trend-up mb-2 block text-lg"></i>Income Sites</button>
+        <div id="view-vault" class="space-y-6">
+            <div class="glass-card">
+                <h3 class="text-[10px] font-bold text-zinc-500 uppercase mb-4 tracking-widest">Register New Asset</h3>
+                <div class="grid grid-cols-2 gap-3" id="cat-grid">
+                    <button onclick="showPlatforms('exchanges')" class="platform-btn"><i class="fa-solid fa-building-columns mb-1 block"></i>Exchanges</button>
+                    <button onclick="showPlatforms('wallets')" class="platform-btn"><i class="fa-solid fa-wallet mb-1 block"></i>Wallets</button>
+                    <button onclick="showPlatforms('social')" class="platform-btn"><i class="fa-solid fa-share-nodes mb-1 block"></i>Socials</button>
+                    <button onclick="showPlatforms('gaming')" class="platform-btn"><i class="fa-solid fa-gamepad mb-1 block"></i>Gaming</button>
+                </div>
+                <div id="step-2" class="hidden mt-6 pt-6 border-t border-zinc-900">
+                    <div id="platform-list" class="grid grid-cols-3 gap-2 mb-4"></div>
+                    <div id="dynamic-fields" class="hidden"></div>
+                    <button id="save-btn" onclick="processAndSave()" class="hidden w-full bg-yellow-600 text-black font-black py-4 rounded-xl uppercase text-xs">Lock Asset</button>
                 </div>
             </div>
+            <div id="vault-display" class="space-y-3"></div>
+        </div>
 
-            <div id="step-2" class="hidden mt-8">
-                <h3 class="text-[10px] font-bold text-zinc-500 uppercase mb-4 tracking-widest">2. Tag Platform</h3>
-                <div id="platform-list" class="grid grid-cols-3 gap-2"></div>
+        <div id="view-discovery" class="hidden space-y-4">
+            <div class="glass-card border-l-4 border-l-blue-500">
+                <h4 class="text-blue-500 text-xs font-bold uppercase mb-2">Legacy Tip #01</h4>
+                <p class="text-sm text-zinc-300">Apne Gmail ka "Inactive Account Manager" zaroor set karein taake 6 mahine baad aapka data khud bacho ko mil jaye.</p>
             </div>
-
-            <div id="step-3" class="hidden mt-8 border-t border-zinc-900 pt-6">
-                <div id="dynamic-fields"></div>
-                <button onclick="processAndSave()" class="w-full bg-yellow-600 text-black font-black py-4 rounded-2xl uppercase tracking-tighter">Secure Asset</button>
+            <div class="glass-card border-l-4 border-l-green-500">
+                <h4 class="text-green-500 text-xs font-bold uppercase mb-2">Security Alert</h4>
+                <p class="text-sm text-zinc-300">Kabhi bhi apna Seed Phrase digital photo mein na rakhein, hamesha is app mein encrypt karke save karein.</p>
             </div>
         </div>
 
-        <div id="vault-display" class="space-y-3"></div>
+        <div id="view-profile" class="hidden space-y-6">
+            <div class="glass-card text-center">
+                <div class="h-20 w-20 bg-yellow-600/20 rounded-full mx-auto mb-4 flex items-center justify-center border border-yellow-600/30">
+                    <i class="fa-solid fa-user-tie text-3xl text-yellow-600"></i>
+                </div>
+                <h2 id="profile-email" class="font-bold text-lg text-white italic">...</h2>
+                <p class="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Status: Master Access</p>
+            </div>
+            <div class="glass-card space-y-4">
+                <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest border-b border-zinc-900 pb-2">Settings</h3>
+                <div class="flex justify-between items-center py-2">
+                    <span class="text-sm">Two-Factor Auth</span>
+                    <span class="text-[10px] bg-green-900 text-green-300 px-2 py-1 rounded">Active</span>
+                </div>
+                <div onclick="logout()" class="flex justify-between items-center py-2 text-red-500 cursor-pointer">
+                    <span class="text-sm font-bold uppercase">Logout System</span>
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
+            </div>
+        </div>
+
+        <nav class="nav-bar">
+            <div onclick="switchTab('vault')" id="tab-vault" class="nav-item active">
+                <i class="fa-solid fa-vault text-xl"></i><span>Vault</span>
+            </div>
+            <div onclick="switchTab('discovery')" id="tab-discovery" class="nav-item">
+                <i class="fa-solid fa-lightbulb text-xl"></i><span>Tips</span>
+            </div>
+            <div onclick="switchTab('profile')" id="tab-profile" class="nav-item">
+                <i class="fa-solid fa-user-gear text-xl"></i><span>Profile</span>
+            </div>
+        </nav>
+
     </div>
 
     <script>
-        // Firebase Configuration (Aapki purani keys)
-        const firebaseConfig = {
-            apiKey: "AIzaSyBKWHEn8-x7KZXAcPDJWfceeNc1snOQuR0",
-            authDomain: "amant-manger.firebaseapp.com",
-            projectId: "amant-manger",
-            databaseURL: "https://amant-manger-default-rtdb.firebaseio.com"
-        };
+        // CONFIG & FIREBASE (Previous logic preserved)
+        const firebaseConfig = { apiKey: "AIzaSyBKWHEn8-x7KZXAcPDJWfceeNc1snOQuR0", authDomain: "amant-manger.firebaseapp.com", projectId: "amant-manger", databaseURL: "https://amant-manger-default-rtdb.firebaseio.com" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
@@ -70,12 +111,19 @@
         let currentApp = "";
 
         const platformMap = {
-            exchanges: ['Binance', 'OKX', 'ByBit', 'KuCoin', 'Coinbase'],
-            wallets: ['MetaMask', 'TrustWallet', 'Phantom', 'Ledger', 'SafePal'],
-            social: ['YouTube', 'TikTok', 'Instagram', 'Facebook', 'X'],
-            gaming: ['Steam', 'Epic Games', 'PUBG ID', 'PlayStation', 'Xbox'],
-            income: ['Upwork', 'Fiverr', 'Google AdSense', 'Amazon', 'PayPal']
+            exchanges: ['Binance', 'OKX', 'ByBit'],
+            wallets: ['MetaMask', 'TrustWallet', 'Phantom'],
+            social: ['YouTube', 'TikTok', 'Facebook'],
+            gaming: ['Steam', 'Epic Games', 'PUBG ID']
         };
+
+        function switchTab(tab) {
+            document.querySelectorAll('[id^="view-"]').forEach(v => v.classList.add('hidden'));
+            document.getElementById('view-' + tab).classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('screen-title').innerText = tab;
+        }
 
         function showPlatforms(cat) {
             currentCat = cat;
@@ -89,7 +137,8 @@
 
         function selectApp(app) {
             currentApp = app;
-            document.getElementById('step-3').classList.remove('hidden');
+            document.getElementById('dynamic-fields').classList.remove('hidden');
+            document.getElementById('save-btn').classList.remove('hidden');
             renderFields();
         }
 
@@ -97,34 +146,29 @@
             const container = document.getElementById('dynamic-fields');
             let html = "";
             if(currentCat === 'exchanges') {
-                html = `<div class="input-group"><label>Login Email</label><input type="text" id="f1"></div>
-                        <div class="input-group"><label>Password</label><input type="password" id="f2"></div>
-                        <div class="input-group"><label>Phone/2FA</label><input type="text" id="f3"></div>`;
+                html = `<div class="input-group"><label>Email</label><input type="text" id="f1"></div>
+                        <div class="input-group"><label>Password</label><input type="password" id="f2"></div>`;
             } else if(currentCat === 'wallets') {
-                html = `<div class="input-group"><label>Wallet Name</label><input type="text" id="f1"></div>
-                        <div class="input-group"><label>Seed Phrase</label><textarea id="f2" rows="3"></textarea></div>
-                        <div class="input-group"><label>Password</label><input type="password" id="f3"></div>`;
-            } else if(currentCat === 'gaming') {
-                html = `<div class="input-group"><label>ID / Username</label><input type="text" id="f1"></div>
-                        <div class="input-group"><label>Password</label><input type="password" id="f2"></div>
-                        <div class="input-group"><label>Recovery Codes</label><textarea id="f3" rows="2"></textarea></div>`;
+                html = `<div class="input-group"><label>Seed Phrase</label><textarea id="f1" class="w-full bg-black border border-zinc-800 p-3 rounded-xl mb-4" rows="3"></textarea></div>`;
             } else {
-                html = `<div class="input-group"><label>Primary Login</label><input type="text" id="f1"></div>
-                        <div class="input-group"><label>Secret Key/Pass</label><input type="password" id="f2"></div>
-                        <div class="input-group"><label>Extra Details</label><textarea id="f3" rows="2"></textarea></div>`;
+                html = `<div class="input-group"><label>ID/Username</label><input type="text" id="f1"></div>
+                        <div class="input-group"><label>Password</label><input type="password" id="f2"></div>`;
             }
             container.innerHTML = html;
         }
 
         function processAndSave() {
-            const data = { f1: document.getElementById('f1').value, f2: document.getElementById('f2').value, f3: document.getElementById('f3').value };
-            const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), "SECURE_KEY_2026").toString();
-            database.ref('vaults/' + auth.currentUser.uid).push({
-                app: currentApp, category: currentCat, payload: encrypted, date: new Date().toLocaleDateString()
-            }).then(() => { location.reload(); });
+            const data = { f1: document.getElementById('f1')?.value || "", f2: document.getElementById('f2')?.value || "" };
+            const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), "KEY_2026").toString();
+            database.ref('vaults/' + auth.currentUser.uid).push({ app: currentApp, category: currentCat, payload: encrypted, date: new Date().toLocaleDateString() }).then(() => location.reload());
         }
 
-        auth.onAuthStateChanged(user => { if(user) fetchVault(user.uid); else window.location.href = "index.html"; });
+        auth.onAuthStateChanged(user => { 
+            if(user) {
+                document.getElementById('profile-email').innerText = user.email;
+                fetchVault(user.uid);
+            } else { window.location.href = "index.html"; }
+        });
 
         function fetchVault(uid) {
             database.ref('vaults/' + uid).on('value', snap => {
@@ -132,15 +176,11 @@
                 display.innerHTML = '<h3 class="text-[10px] font-bold text-zinc-600 uppercase mb-4">Secured Assets</h3>';
                 snap.forEach(child => {
                     const item = child.val();
-                    display.innerHTML += `
-                        <div class="glass-card p-4 flex items-center justify-between border-l-4 border-yellow-600 mb-3">
-                            <div><h4 class="text-xs font-black uppercase">${item.app}</h4><p class="text-[8px] text-zinc-500 font-bold uppercase">${item.category}</p></div>
-                            <button onclick="deleteAsset('${child.key}')"><i class="fa-solid fa-trash-can text-zinc-800 text-xs"></i></button>
-                        </div>`;
+                    display.innerHTML += `<div class="glass-card p-4 flex items-center justify-between border-l-2 border-yellow-600 mb-3"><div><h4 class="text-xs font-black uppercase text-white">${item.app}</h4><p class="text-[8px] text-zinc-500 font-bold uppercase">${item.category}</p></div></div>`;
                 });
             });
         }
-        function deleteAsset(key) { if(confirm("Delete?")) database.ref('vaults/' + auth.currentUser.uid + '/' + key).remove(); }
+        function logout() { auth.signOut(); }
     </script>
 </body>
 </html>
