@@ -3,84 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Assets Security Manager</title>
+    <title>Digital Assets Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap');
         body { font-family: 'Space Grotesk', sans-serif; background-color: #050505; color: #d4d4d8; }
         .vault-card { background: linear-gradient(145deg, #0f0f0f, #18181b); border: 1px solid #27272a; border-radius: 2rem; }
         .hidden { display: none; }
         .tab-active { border-bottom: 2px solid #eab308; color: #eab308; }
-        .input-style { background: #000; border: 1px solid #27272a; padding: 1rem; border-radius: 1rem; width: 100%; outline: none; color: white; }
-        .input-style:focus { border-color: #eab308; }
+        .input-style { background: #000; border: 1px solid #27272a; padding: 1rem; border-radius: 1rem; width: 100%; color: white; outline: none; }
     </style>
 </head>
 <body class="pb-20">
-
     <div class="max-w-md mx-auto p-5 space-y-6">
         <header class="flex flex-col items-center py-6 text-center">
-            <h1 class="text-2xl font-black text-yellow-500 italic tracking-tighter uppercase leading-tight">Digital Assets Security Manager</h1>
-            <p class="text-[9px] text-zinc-500 font-mono tracking-[0.3em] mt-1 uppercase">Institutional Grade Encryption</p>
-            <button id="logout-btn" onclick="logout()" class="hidden mt-4 text-[10px] bg-zinc-800 hover:bg-red-900 px-3 py-1 rounded-lg uppercase font-bold text-red-400 transition-all">Logout System</button>
+            <h1 class="text-2xl font-black text-yellow-500 italic uppercase">Digital Assets Manager</h1>
+            <p class="text-[10px] text-zinc-500 tracking-widest uppercase">Instant Access Protocol</p>
+            <button id="logout-btn" onclick="logout()" class="hidden mt-4 text-[10px] bg-zinc-800 px-3 py-1 rounded-lg text-red-400 font-bold">LOGOUT SYSTEM</button>
         </header>
 
         <div id="auth-container" class="vault-card p-8 shadow-2xl">
             <div class="flex justify-around mb-8 border-b border-zinc-800">
-                <button id="tab-login" onclick="switchAuthTab('login')" class="pb-2 text-sm font-bold uppercase tab-active transition-all">Login</button>
-                <button id="tab-signup" onclick="switchAuthTab('signup')" class="pb-2 text-sm font-bold uppercase text-zinc-600 transition-all">Signup</button>
+                <button id="tab-login" onclick="switchAuthTab('login')" class="pb-2 text-sm font-bold uppercase tab-active">Login</button>
+                <button id="tab-signup" onclick="switchAuthTab('signup')" class="pb-2 text-sm font-bold uppercase text-zinc-600">Signup</button>
             </div>
-
+            
             <div id="login-form" class="space-y-4">
-                <input type="email" id="login-email" placeholder="Email Address" class="input-style">
-                <input type="password" id="login-pass" placeholder="Master Password" class="input-style">
-                <button onclick="handleLogin()" class="w-full bg-yellow-600 hover:bg-yellow-500 text-black font-black py-4 rounded-2xl uppercase tracking-widest shadow-lg active:scale-95 transition-all">Access Vault</button>
+                <input type="email" id="login-email" placeholder="Username (Email)" class="input-style">
+                <input type="password" id="login-pass" placeholder="Password" class="input-style">
+                <button onclick="handleLogin()" class="w-full bg-yellow-600 text-black font-black py-4 rounded-2xl uppercase shadow-lg active:scale-95 transition-all">Access Vault</button>
             </div>
 
             <div id="signup-form" class="hidden space-y-4">
-                <input type="text" id="reg-name" placeholder="Full Legal Name" class="input-style">
-                <input type="email" id="reg-email" placeholder="Gmail Address" class="input-style">
-                <input type="password" id="reg-pass" placeholder="Create Master Key (8+ Chars)" class="input-style">
-                <button onclick="handleSignup()" class="w-full bg-yellow-600 hover:bg-yellow-500 text-black font-black py-4 rounded-2xl uppercase tracking-widest shadow-lg active:scale-95 transition-all">Initialize Protocol</button>
+                <input type="text" id="reg-name" placeholder="Full Name" class="input-style">
+                <input type="email" id="reg-email" placeholder="Email Address" class="input-style">
+                <input type="password" id="reg-pass" placeholder="Password (8+ chars)" class="input-style">
+                <button onclick="handleSignup()" class="w-full bg-yellow-600 text-black font-black py-4 rounded-2xl uppercase shadow-lg active:scale-95 transition-all">Create Account</button>
             </div>
-        </div>
-
-        <div id="verify-msg" class="hidden vault-card p-8 text-center space-y-4 border border-yellow-900/30">
-            <i class="fa-solid fa-envelope-circle-check text-5xl text-yellow-500 animate-pulse"></i>
-            <h3 class="text-xl font-bold text-white uppercase italic">Security Protocol: Verify Email</h3>
-            <p class="text-sm text-zinc-400">Humne aapki Gmail par activation link bheja hai. Jab tak aap link par click nahi karenge, vault nahi khulega.</p>
-            <button onclick="location.reload()" class="text-yellow-500 font-black uppercase text-xs underline mt-4 hover:text-white transition-all">I Have Verified, Proceed to Login</button>
         </div>
 
         <div id="digital-safe" class="hidden space-y-6">
             <div class="vault-card p-6 border-l-4 border-l-yellow-600">
-                <h3 class="text-sm font-black uppercase mb-4 text-yellow-500 italic flex items-center gap-2">
-                    <i class="fa-solid fa-lock text-xs"></i> Asset Security Vault
-                </h3>
-                <textarea id="secret-data" rows="4" placeholder="Enter Private Keys, Seed Phrases, or Passwords..." class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-xs mb-4 text-yellow-500 font-mono focus:border-yellow-600 outline-none"></textarea>
-                <button onclick="encryptAndSave()" class="w-full bg-yellow-600 text-black font-black py-3 rounded-xl text-[10px] uppercase tracking-widest hover:brightness-110 transition-all">Encrypt & Secure Asset</button>
+                <h3 class="text-sm font-black uppercase mb-4 text-yellow-500">Secure Vault Storage</h3>
+                <textarea id="secret-data" rows="4" placeholder="Enter your secret keys or data here..." class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-yellow-500 outline-none font-mono text-sm"></textarea>
+                <button onclick="encryptAndSave()" class="w-full bg-yellow-600 text-black font-black py-3 rounded-xl uppercase mt-2 hover:brightness-110">Encrypt & Save Data</button>
             </div>
 
             <div class="vault-card p-6 border-l-4 border-l-blue-600">
-                <h3 class="text-sm font-black uppercase mb-4 text-blue-400 italic flex items-center gap-2">
-                    <i class="fa-solid fa-user-shield text-xs"></i> Beneficiary Protocol (Heir)
-                </h3>
+                <h3 class="text-sm font-black uppercase mb-4 text-blue-400 italic">Beneficiary (Heir)</h3>
                 <div class="space-y-3">
-                    <input type="text" id="heir-name" placeholder="Heir's Legal Name" class="input-style text-xs">
-                    <input type="email" id="heir-email" placeholder="Heir's Email Address" class="input-style text-xs">
-                    <button onclick="saveHeir()" class="w-full bg-blue-600 text-white font-black py-3 rounded-xl text-[10px] uppercase tracking-widest hover:bg-blue-500 transition-all">Register/Update Beneficiary</button>
+                    <input type="text" id="heir-name" placeholder="Heir's Name" class="input-style text-xs">
+                    <input type="email" id="heir-email" placeholder="Heir's Email" class="input-style text-xs">
+                    <button onclick="saveHeir()" class="w-full bg-blue-600 text-white font-black py-3 rounded-xl text-[10px] uppercase">Register Heir</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Final Validated Configuration
+        // Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBKWHEn8-x7KZXAcPDJWfceeNc1snOQuR0",
             authDomain: "amant-manger.firebaseapp.com",
@@ -90,7 +75,6 @@
             appId: "1:1069118851611:web:7087758e6d7c2bd91106be",
             databaseURL: "https://amant-manger-default-rtdb.firebaseio.com"
         };
-        
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
@@ -102,43 +86,31 @@
             document.getElementById('tab-signup').classList.toggle('tab-active', tab === 'signup');
         }
 
+        // Fast Signup (No Email Verification)
         async function handleSignup() {
             const email = document.getElementById('reg-email').value;
             const pass = document.getElementById('reg-pass').value;
             const name = document.getElementById('reg-name').value;
-            
-            if(!email || !pass || !name) return alert("All fields are mandatory for initialization.");
-
             try {
-                const userCred = await auth.createUserWithEmailAndPassword(email, pass);
-                await userCred.user.sendEmailVerification();
-                await database.ref('users/' + userCred.user.uid).set({ 
-                    fullName: name, 
-                    email: email,
-                    joinedAt: new Date().getTime()
-                });
-                document.getElementById('auth-container').classList.add('hidden');
-                document.getElementById('verify-msg').classList.remove('hidden');
-            } catch (e) { alert("Initialization Error: " + e.message); }
+                await auth.createUserWithEmailAndPassword(email, pass);
+                await database.ref('users/' + auth.currentUser.uid).set({ fullName: name, email: email });
+                alert("Account Created Successfully!");
+            } catch (e) { alert(e.message); }
         }
 
+        // Fast Login
         async function handleLogin() {
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-pass').value;
-            
             try {
-                const userCred = await auth.signInWithEmailAndPassword(email, pass);
-                if(!userCred.user.emailVerified) {
-                    auth.signOut();
-                    return alert("Security Block: Please verify your Gmail link before access.");
-                }
-            } catch (e) { alert("Access Denied: " + e.message); }
+                await auth.signInWithEmailAndPassword(email, pass);
+            } catch (e) { alert("Invalid Login Details"); }
         }
 
+        // Automatically show dashboard if logged in
         auth.onAuthStateChanged((user) => {
-            if (user && user.emailVerified) {
+            if (user) {
                 document.getElementById('auth-container').classList.add('hidden');
-                document.getElementById('verify-msg').classList.add('hidden');
                 document.getElementById('digital-safe').classList.remove('hidden');
                 document.getElementById('logout-btn').classList.remove('hidden');
                 loadHeirData(user.uid);
@@ -149,37 +121,23 @@
 
         function encryptAndSave() {
             const data = document.getElementById('secret-data').value;
-            if(!data) return alert("Safe cannot be locked with empty data.");
-            
-            // AES Encryption Layer
-            const encrypted = CryptoJS.AES.encrypt(data, "MASTER_SECURITY_KEY_2026").toString();
-            database.ref('vaults/' + auth.currentUser.uid).push({ 
-                payload: encrypted, 
-                timestamp: new Date().getTime() 
-            }).then(() => {
-                alert("ASSET ENCRYPTED & SECURED IN CLOUD!");
-                document.getElementById('secret-data').value = "";
-            });
+            if(!data) return alert("Please enter some data");
+            const encrypted = CryptoJS.AES.encrypt(data, "VAULT_2026").toString();
+            database.ref('vaults/' + auth.currentUser.uid).push({ payload: encrypted, time: Date.now() })
+            .then(() => alert("Data Encrypted & Saved!"));
         }
 
         function saveHeir() {
             const name = document.getElementById('heir-name').value;
             const email = document.getElementById('heir-email').value;
-            if(!name || !email) return alert("Heir identity details are incomplete.");
-
-            database.ref('heirs/' + auth.currentUser.uid).set({ 
-                name, 
-                email,
-                protocolStatus: "Active" 
-            }).then(() => alert("BENEFICIARY PROTOCOL SAVED!"));
+            database.ref('heirs/' + auth.currentUser.uid).set({ name, email }).then(() => alert("Heir Registered!"));
         }
 
         function loadHeirData(uid) {
             database.ref('heirs/' + uid).once('value', (s) => {
-                const data = s.val();
-                if(data) {
-                    document.getElementById('heir-name').value = data.name;
-                    document.getElementById('heir-email').value = data.email;
+                if(s.val()) {
+                    document.getElementById('heir-name').value = s.val().name;
+                    document.getElementById('heir-email').value = s.val().email;
                 }
             });
         }
