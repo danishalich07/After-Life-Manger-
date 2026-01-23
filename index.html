@@ -22,8 +22,8 @@
     <div class="max-w-md mx-auto p-5 space-y-6">
         <header class="flex flex-col items-center py-6 text-center">
             <h1 class="text-2xl font-black text-yellow-500 italic uppercase">Digital Assets Manager</h1>
-            <p class="text-[10px] text-zinc-500 tracking-widest uppercase">Instant Access Protocol</p>
-            <button id="logout-btn" onclick="logout()" class="hidden mt-4 text-[10px] bg-zinc-800 px-3 py-1 rounded-lg text-red-400 font-bold">LOGOUT SYSTEM</button>
+            <p class="text-[10px] text-zinc-500 tracking-widest uppercase">Username Access Protocol</p>
+            <button id="logout-btn" onclick="logout()" class="hidden mt-4 text-[10px] bg-zinc-800 px-3 py-1 rounded-lg text-red-400 font-bold">LOGOUT</button>
         </header>
 
         <div id="auth-container" class="vault-card p-8 shadow-2xl">
@@ -33,39 +33,28 @@
             </div>
             
             <div id="login-form" class="space-y-4">
-                <input type="email" id="login-email" placeholder="Username (Email)" class="input-style">
+                <input type="text" id="login-user" placeholder="Enter Username" class="input-style">
                 <input type="password" id="login-pass" placeholder="Password" class="input-style">
-                <button onclick="handleLogin()" class="w-full bg-yellow-600 text-black font-black py-4 rounded-2xl uppercase shadow-lg active:scale-95 transition-all">Access Vault</button>
+                <button onclick="handleLogin()" class="w-full bg-yellow-600 text-black font-black py-4 rounded-2xl uppercase shadow-lg active:scale-95">Access Vault</button>
             </div>
 
             <div id="signup-form" class="hidden space-y-4">
-                <input type="text" id="reg-name" placeholder="Full Name" class="input-style">
-                <input type="email" id="reg-email" placeholder="Email Address" class="input-style">
-                <input type="password" id="reg-pass" placeholder="Password (8+ chars)" class="input-style">
-                <button onclick="handleSignup()" class="w-full bg-yellow-600 text-black font-black py-4 rounded-2xl uppercase shadow-lg active:scale-95 transition-all">Create Account</button>
+                <input type="text" id="reg-user" placeholder="Create Unique Username" class="input-style">
+                <input type="password" id="reg-pass" placeholder="Create Password" class="input-style">
+                <button onclick="handleSignup()" class="w-full bg-yellow-600 text-black font-black py-4 rounded-2xl uppercase shadow-lg active:scale-95">Register User</button>
             </div>
         </div>
 
         <div id="digital-safe" class="hidden space-y-6">
             <div class="vault-card p-6 border-l-4 border-l-yellow-600">
-                <h3 class="text-sm font-black uppercase mb-4 text-yellow-500">Secure Vault Storage</h3>
-                <textarea id="secret-data" rows="4" placeholder="Enter your secret keys or data here..." class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-yellow-500 outline-none font-mono text-sm"></textarea>
-                <button onclick="encryptAndSave()" class="w-full bg-yellow-600 text-black font-black py-3 rounded-xl uppercase mt-2 hover:brightness-110">Encrypt & Save Data</button>
-            </div>
-
-            <div class="vault-card p-6 border-l-4 border-l-blue-600">
-                <h3 class="text-sm font-black uppercase mb-4 text-blue-400 italic">Beneficiary (Heir)</h3>
-                <div class="space-y-3">
-                    <input type="text" id="heir-name" placeholder="Heir's Name" class="input-style text-xs">
-                    <input type="email" id="heir-email" placeholder="Heir's Email" class="input-style text-xs">
-                    <button onclick="saveHeir()" class="w-full bg-blue-600 text-white font-black py-3 rounded-xl text-[10px] uppercase">Register Heir</button>
-                </div>
+                <h3 class="text-sm font-black uppercase mb-4 text-yellow-500">Secure Assets</h3>
+                <textarea id="secret-data" rows="4" placeholder="Put your secret information here..." class="w-full bg-black border border-zinc-800 p-4 rounded-xl text-yellow-500 outline-none font-mono"></textarea>
+                <button onclick="encryptAndSave()" class="w-full bg-yellow-600 text-black font-black py-3 rounded-xl uppercase mt-2">Encrypt & Save</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBKWHEn8-x7KZXAcPDJWfceeNc1snOQuR0",
             authDomain: "amant-manger.firebaseapp.com",
@@ -86,34 +75,33 @@
             document.getElementById('tab-signup').classList.toggle('tab-active', tab === 'signup');
         }
 
-        // Fast Signup (No Email Verification)
         async function handleSignup() {
-            const email = document.getElementById('reg-email').value;
+            const user = document.getElementById('reg-user').value;
             const pass = document.getElementById('reg-pass').value;
-            const name = document.getElementById('reg-name').value;
+            if(!user || !pass) return alert("Fields cannot be empty");
+            
+            // Converting username to dummy email format for Firebase
+            const fakeEmail = user.trim() + "@amant.com";
             try {
-                await auth.createUserWithEmailAndPassword(email, pass);
-                await database.ref('users/' + auth.currentUser.uid).set({ fullName: name, email: email });
-                alert("Account Created Successfully!");
-            } catch (e) { alert(e.message); }
+                await auth.createUserWithEmailAndPassword(fakeEmail, pass);
+                alert("Username Registered!");
+            } catch (e) { alert("Error: Use a unique username"); }
         }
 
-        // Fast Login
         async function handleLogin() {
-            const email = document.getElementById('login-email').value;
+            const user = document.getElementById('login-user').value;
             const pass = document.getElementById('login-pass').value;
+            const fakeEmail = user.trim() + "@amant.com";
             try {
-                await auth.signInWithEmailAndPassword(email, pass);
-            } catch (e) { alert("Invalid Login Details"); }
+                await auth.signInWithEmailAndPassword(fakeEmail, pass);
+            } catch (e) { alert("Wrong Username or Password"); }
         }
 
-        // Automatically show dashboard if logged in
         auth.onAuthStateChanged((user) => {
             if (user) {
                 document.getElementById('auth-container').classList.add('hidden');
                 document.getElementById('digital-safe').classList.remove('hidden');
                 document.getElementById('logout-btn').classList.remove('hidden');
-                loadHeirData(user.uid);
             }
         });
 
@@ -121,25 +109,10 @@
 
         function encryptAndSave() {
             const data = document.getElementById('secret-data').value;
-            if(!data) return alert("Please enter some data");
-            const encrypted = CryptoJS.AES.encrypt(data, "VAULT_2026").toString();
+            if(!data) return alert("Enter some data first");
+            const encrypted = CryptoJS.AES.encrypt(data, "VAULT_KEY_2026").toString();
             database.ref('vaults/' + auth.currentUser.uid).push({ payload: encrypted, time: Date.now() })
-            .then(() => alert("Data Encrypted & Saved!"));
-        }
-
-        function saveHeir() {
-            const name = document.getElementById('heir-name').value;
-            const email = document.getElementById('heir-email').value;
-            database.ref('heirs/' + auth.currentUser.uid).set({ name, email }).then(() => alert("Heir Registered!"));
-        }
-
-        function loadHeirData(uid) {
-            database.ref('heirs/' + uid).once('value', (s) => {
-                if(s.val()) {
-                    document.getElementById('heir-name').value = s.val().name;
-                    document.getElementById('heir-email').value = s.val().email;
-                }
-            });
+            .then(() => alert("Asset Secured!"));
         }
     </script>
 </body>
